@@ -16,7 +16,7 @@ export async function loginAction({ request }: { request: Request }) {
   }
 
   const auth = authenticateUser(result.data.email, result.data.password)
-  if (!auth.success) {
+  if (!auth.success || !auth.user) {
     session.flash("error", "Invalid email or password")
     return redirect("/login", {
       headers: {

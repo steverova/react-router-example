@@ -13,6 +13,15 @@ import { userAction as action } from "./user.action"
 
 export { loader, action }
 
+interface User {
+  id: number
+  publicId: string
+  name: string
+  email: string
+  role: string
+  status: string | null
+}
+
 export function meta() {
   return [{ title: "Users" }]
 }
@@ -116,7 +125,7 @@ export default function UserPage() {
             <p>No users found.</p>
           ) : (
             <ul className="mt-2 list-disc pl-4">
-              {users.map((user) => (
+              {users.map((user: User) => (
                 <li key={user.id} className="flex items-center justify-between">
                   <span>{user.name} - {user.email}</span>
                   <Button

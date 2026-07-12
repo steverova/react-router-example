@@ -1,7 +1,9 @@
+import { requireAuth } from "~/session.server"
 import { createUserSchema } from "../user.schema"
 import { registerUser, removeUser } from "../user.service"
 
 export async function userAction({ request }: { request: Request }) {
+  await requireAuth(request)
   const formData = await request.formData()
   const intent = formData.get("intent") as string
 

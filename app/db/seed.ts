@@ -1,5 +1,6 @@
-import { randomBytes, scryptSync } from 'node:crypto'
+import { randomBytes } from 'node:crypto'
 import Database from 'better-sqlite3'
+import { hashPassword } from '~/lib/crypto'
 
 const SEED_USER = {
 	name: 'Admin',
@@ -12,12 +13,6 @@ const SEED_USER = {
 }
 
 const SEED_PASSWORD = 'password123'
-
-function hashPassword(password: string): string {
-	const salt = randomBytes(16).toString('hex')
-	const hash = scryptSync(password, salt, 64).toString('hex')
-	return `${salt}:${hash}`
-}
 
 function seed() {
 	console.log(' Seeding database...')

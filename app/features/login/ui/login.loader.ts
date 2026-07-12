@@ -4,8 +4,6 @@ import { getSession } from "~/session.server"
 export async function loginLoader({ request }: { request: Request }) {
   const session = await getSession(request.headers.get("Cookie"))
 
-  console.log("session ->", session)
-
   if (session.has("userId")) {
     return redirect("/")
   }

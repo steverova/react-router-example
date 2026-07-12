@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import { parseAsString, useQueryState } from 'nuqs'
+import { useSearchParams } from 'react-router'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '~/components/ui/tabs'
 
 interface Tab {
@@ -20,15 +20,13 @@ export function TabsUrl({
 	defaultTab = tabs[0]?.key,
 	paramName = 'tab'
 }: TabsUrlProps) {
-	const [activeTab, setActiveTab] = useQueryState(
-		paramName,
-		parseAsString.withDefault(defaultTab)
-	)
+	const [searchParams, setSearchParams] = useSearchParams()
+	const activeTab = searchParams.get(paramName) ?? defaultTab
 
 	return (
 		<Tabs
-			value={activeTab ?? defaultTab}
-			onValueChange={(value) => setActiveTab(value)}
+			value={activeTab}
+			onValueChange={(value) => setSearchParams({ [paramName]: value })}
 		>
 			<TabsList>
 				{tabs.map((tab) => (

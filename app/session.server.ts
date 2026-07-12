@@ -20,7 +20,7 @@ const { getSession, commitSession, destroySession } =
       maxAge: SESSION_MAX_AGE,
       path: "/",
       sameSite: "lax",
-      secrets: ["s3cret1"],
+      secrets: [process.env.SESSION_SECRET ?? "s3cret1"],
       secure: process.env.NODE_ENV === "production",
     },
   });

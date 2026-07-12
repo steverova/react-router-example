@@ -3,10 +3,11 @@ import { persist } from "zustand/middleware"
 
 interface User {
   id: number
+  publicId: string
   name: string
   email: string
   role: string
-  status: string
+  status: string | null
 }
 
 interface AuthState {
@@ -24,6 +25,7 @@ export const useAuthStore = create<AuthState>()(
     }),
     {
       name: "auth-storage",
+      partialize: (state) => ({ user: state.user }),
     }
   )
 )
