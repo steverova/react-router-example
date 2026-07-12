@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Outlet, useLoaderData } from 'react-router'
+import { Outlet, useLoaderData, data } from 'react-router'
 import {
 	SidebarInset,
 	SidebarProvider,
@@ -7,7 +7,7 @@ import {
 } from '~/components/ui/sidebar'
 import { Separator } from '~/components/ui/separator'
 import { AppSidebar } from './app-sidebar'
-import { requireAuth } from '~/session.server'
+import { requireAuth, rotateSession } from '~/session.server'
 import { getUserById } from '~/features/user/user.repository'
 import { useAuthStore } from '~/stores/auth-store'
 
@@ -15,6 +15,10 @@ import { useAuthStore } from '~/stores/auth-store'
 export async function loader({ request }: { request: Request }) {
   const userId = await requireAuth(request)
   const user = getUserById(Number(userId))
+  const rotated = await rotateSession(request)
+  if (rotated) {
+    return data({ user }, { headers: rotated.headers })
+  }
   return { user }
 }
 

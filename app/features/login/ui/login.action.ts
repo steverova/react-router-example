@@ -26,6 +26,7 @@ export async function loginAction({ request }: { request: Request }) {
   }
 
   session.set("userId", String(auth.user.id))
+  session.set("createdAt", Math.floor(Date.now() / 1000))
   return redirect("/", {
     headers: {
       "Set-Cookie": await commitSession(session),
