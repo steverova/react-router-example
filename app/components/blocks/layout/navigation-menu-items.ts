@@ -28,7 +28,7 @@ export type NavigationItem = {
 
 const navigation: NavigationItem[] = [
 	{
-		path: '/',
+		path: '/dashboard',
 		label: 'Dashboard',
 		type: 'item',
 		icon: LayoutDashboard,

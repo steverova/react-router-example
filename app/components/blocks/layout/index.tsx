@@ -1,3 +1,4 @@
+import * as React from 'react'
 import { Outlet, useLoaderData } from 'react-router'
 import {
 	SidebarInset,
@@ -7,17 +8,27 @@ import {
 import { Separator } from '~/components/ui/separator'
 import { AppSidebar } from './app-sidebar'
 import { requireAuth } from '~/session.server'
+import { getUserById } from '~/features/user/user.repository'
+import { useAuthStore } from '~/stores/auth-store'
 
 
 export async function loader({ request }: { request: Request }) {
   const userId = await requireAuth(request)
-  return { userId }
+  const user = getUserById(Number(userId))
+  return { user }
 }
 
 export default function Layout() {
+  const { user } = useLoaderData<typeof loader>()
+  const setUser = useAuthStore((s) => s.setUser)
+  const authUser = useAuthStore((s) => s.user)
 
-  const { userId } = useLoaderData<typeof loader>()
-  
+  React.useEffect(() => {
+    if (user && JSON.stringify(user) !== JSON.stringify(authUser)) {
+      setUser(user)
+    }
+  }, [user])
+	
 	return (
 		<SidebarProvider className='h-screen'>
 			<AppSidebar />
@@ -25,7 +36,6 @@ export default function Layout() {
 				<header className='flex h-12 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-10 sticky top-0 z-50 bg-background border-b'>
 					<div className='flex items-center gap-2 px-3'>
             <SidebarTrigger className='-ml-1' />
-            {userId}
 						<Separator
 							orientation='vertical'
 							className='mr-2 data-[orientation=vertical]:h-8'

@@ -1,5 +1,9 @@
 import { Button } from "~/components/ui/button"
 
+export function loader() {
+  return {}
+}
+
 export default function Home() {
   return (
     <div className="flex min-h-svh p-6">

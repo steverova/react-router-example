@@ -1,11 +1,9 @@
 import {
 	BadgeCheckIcon,
 	ChevronsUpDownIcon,
-	Loader2Icon,
 	LogOutIcon
 } from 'lucide-react'
-import { useState } from 'react'
-import { useNavigate } from 'react-router'
+import { useFetcher } from 'react-router'
 import { Avatar, AvatarFallback } from '~/components/ui/avatar'
 import {
 	DropdownMenu,
@@ -22,21 +20,16 @@ import {
 	SidebarMenuItem,
 	useSidebar
 } from '~/components/ui/sidebar'
+import { useAuthStore } from '~/stores/auth-store'
 
 
 export function NavUser() {
-	const navigate = useNavigate()
 	const { isMobile } = useSidebar()
-	const [isLoggingOut, setIsLoggingOut] = useState(false)
+	const user = useAuthStore((s) => s.user)
+	const logout = useAuthStore((s) => s.logout)
+	const fetcher = useFetcher()
 
-  const user = {
-    email: 'steverova0594@gmail.com',
-    role: 'admin'
-  }
-	function handleLogout() {
-		setIsLoggingOut(true)
-	
-	}
+	if (!user) return null
 
 	return (
 		<SidebarMenu>
@@ -49,7 +42,7 @@ export function NavUser() {
 					>
 						<Avatar>
 							<AvatarFallback>
-								{user.email.charAt(0).toUpperCase()}
+								{user.name.charAt(0).toUpperCase()}
 							</AvatarFallback>
 						</Avatar>
 						<div className='grid flex-1 text-left text-sm leading-tight'>
@@ -69,11 +62,14 @@ export function NavUser() {
 								<div className='flex items-center gap-2 px-1 py-1.5 text-left text-sm'>
 									<Avatar>
 										<AvatarFallback>
-											{user.email.charAt(0).toUpperCase()}
+											{user.name.charAt(0).toUpperCase()}
 										</AvatarFallback>
 									</Avatar>
 									<div className='grid flex-1 text-left text-sm leading-tight'>
-										<span className='truncate font-medium'>{user.email}</span>
+										<span className='truncate font-medium'>{user.name}</span>
+										<span className='truncate text-xs'>
+											{user.email}
+										</span>
 										<span className='truncate text-xs capitalize'>
 											{user.role}
 										</span>
@@ -83,34 +79,24 @@ export function NavUser() {
 						</DropdownMenuGroup>
 						<DropdownMenuSeparator />
 						<DropdownMenuGroup>
-							<DropdownMenuItem onClick={() => navigate('account')}>
+							<DropdownMenuItem>
 								<BadgeCheckIcon />
 								Account
 							</DropdownMenuItem>
 						</DropdownMenuGroup>
 						<DropdownMenuSeparator />
-						<DropdownMenuItem onClick={handleLogout} disabled={isLoggingOut}>
-							{isLoggingOut ? (
-								<Loader2Icon className='animate-spin' />
-							) : (
-								<LogOutIcon />
-							)}
-							{isLoggingOut ? 'Cerrando sesión...' : 'Log out'}
+						<DropdownMenuItem
+							onClick={() => {
+								logout()
+								fetcher.submit(null, { method: "post", action: "/logout" })
+							}}
+						>
+							<LogOutIcon />
+							Log out
 						</DropdownMenuItem>
 					</DropdownMenuContent>
 				</DropdownMenu>
 			</SidebarMenuItem>
-
-			{isLoggingOut && (
-				<div className='fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm'>
-					<div className='flex flex-col items-center gap-3'>
-						<Loader2Icon className='size-8 animate-spin text-primary' />
-						<span className='text-sm text-muted-foreground'>
-							Cerrando sesión...
-						</span>
-					</div>
-				</div>
-			)}
 		</SidebarMenu>
 	)
 }
