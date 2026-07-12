@@ -1,12 +1,14 @@
 import { useForm, FormProvider, useFormContext } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { loginSchema, type LoginInput } from "../login.schema"
+import type { FetcherWithComponents } from "react-router"
+import type { LoginInput } from "../login.schema"
+import { loginSchema } from "../login.schema"
 import { Button } from "~/components/ui/button"
 import { Input } from "~/components/ui/input"
 import { Label } from "~/components/ui/label"
 
 interface LoginFormProps {
-  fetcher: { state: string; submit: (data: LoginInput, options: { method: string }) => void }
+  fetcher: FetcherWithComponents<unknown>
 }
 
 function EmailField() {

@@ -11,7 +11,7 @@ export function meta() {
 
 export default function LoginPage() {
   const { error } = useLoaderData<typeof loader>()
-  const fetcher = useFetcher<typeof action>()
+  const fetcher = useFetcher()
 
   return (
     <div className="flex min-h-svh w-full items-center justify-center p-6 md:p-10">
