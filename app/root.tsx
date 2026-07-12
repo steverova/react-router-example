@@ -9,6 +9,8 @@ import {
 
 import type { Route } from "./+types/root"
 import "./app.css"
+import { Toaster } from "./components/ui/sonner"
+import { AlertDialogProvider } from "./components/providers/alert-dialog-provider"
 
 export function Layout({ children }: { children: React.ReactNode }) {
   return (
@@ -20,7 +22,10 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Links />
       </head>
       <body>
-        {children}
+        <AlertDialogProvider>
+          <Toaster />
+          {children}
+        </AlertDialogProvider>
         <ScrollRestoration />
         <Scripts />
       </body>
