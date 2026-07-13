@@ -330,7 +330,7 @@ export function DataTable<TData, TValue>({
 
 	return (
 		<div className='flex h-full flex-col'>
-			<div className='flex items-center justify-between px-3 mb-2'>
+			<div className='flex items-center justify-between px-3 my-2'>
 				<div className='flex items-center gap-2'>
 					{title && <h1 className='text-2xl font-semibold'>{title}</h1>}
 				</div>

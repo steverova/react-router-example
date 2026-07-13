@@ -9,6 +9,7 @@ export default [
   route("logout", "./routes/logout.tsx"),
   layout("./components/blocks/layout/index.tsx", [
     index("routes/home.tsx"),
+    route("table-example", "./features/table-example.tsx"),
     route("users", "./features/user/ui/user-page.tsx"),
     route("users/new-record", "./features/user/ui/user-form.tsx", { id: "users-new" }),
     route("users/:id/edit-record", "./features/user/ui/user-form.tsx", { id: "users-edit" }),

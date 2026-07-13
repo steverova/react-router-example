@@ -1,7 +1,7 @@
 import { useEffect } from "react"
 import { useLoaderData, useFetcher, useNavigate, Link } from "react-router"
 import type { ColumnDef, Row } from "@tanstack/react-table"
-import { PencilIcon, TrashIcon } from "lucide-react"
+import { LoaderCircle, PencilIcon, TrashIcon } from "lucide-react"
 import { Button } from "~/components/ui/button"
 import { toast } from "sonner"
 import { useAlertDialog } from "~/components/providers/alert-dialog-provider"
@@ -71,7 +71,9 @@ function UserActions({ row }: { row: Row<User> }) {
         onClick={onDelete}
         disabled={isDeleting}
       >
-        <TrashIcon className="h-4 w-4" />
+        {isDeleting ? <LoaderCircle className="animate-spin"/> : <TrashIcon className="h-4 w-4" />  }
+
+
       </Button>
     </div>
   )
@@ -88,14 +90,12 @@ export default function UserPage() {
   ]
 
   return (
-    <div className="py-2">
-      <DataTable
-        title="Users"
-        data={users}
-        columns={columns}
-        rowActions={UserActions}
-        onAdd={() => navigate("/users/new-record")}
-      />
-    </div>
+    <DataTable
+      title="Users"
+      data={users}
+      columns={columns}
+      rowActions={UserActions}
+      onAdd={() => navigate("/users/new-record")}
+    />
   )
 }

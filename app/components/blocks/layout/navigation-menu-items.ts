@@ -8,6 +8,7 @@ import {
 	LayoutDashboard,
 	Puzzle,
 	Table,
+	Table2,
 	User,
   User2,
 } from 'lucide-react'
@@ -42,6 +43,15 @@ const navigation: NavigationItem[] = [
 		label: 'Users',
 		type: 'item',
 		icon: User2,
+		authorization: {
+			roles: ['admin', 'user'],
+		},
+  },
+  {
+		path: '/table-example',
+		label: 'Table Example',
+		type: 'item',
+		icon: Table2,
 		authorization: {
 			roles: ['admin', 'user'],
 		},
