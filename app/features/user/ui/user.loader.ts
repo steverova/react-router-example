@@ -1,6 +1,13 @@
-import { listUsers } from "../user.service"
+import { listUsers, findUser } from "../user.service"
 
-export function userLoader() {
+export async function userLoader({ params }: { params: { id?: string } }) {
+  // Si hay un ID en los parámetros, cargar solo ese usuario
+  if (params.id) {
+    const user = findUser(Number(params.id))
+    return { users: user ? [user] : [], user }
+  }
+  
+  // otherwise, load all users
   const users = listUsers()
-  return { users }
+  return { users, user: null }
 }

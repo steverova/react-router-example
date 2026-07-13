@@ -1,6 +1,6 @@
 import { requireAuth } from "~/session.server"
 import { createUserSchema } from "../user.schema"
-import { registerUser, removeUser } from "../user.service"
+import { registerUser, removeUser, updateUser } from "../user.service"
 
 export async function userAction({ request }: { request: Request }) {
   await requireAuth(request)
@@ -17,6 +17,20 @@ export async function userAction({ request }: { request: Request }) {
     }
 
     registerUser(result.data.name, result.data.email)
+    return { success: true }
+  }
+
+  if (intent === "edit") {
+    const name = formData.get("name") as string
+    const email = formData.get("email") as string
+    const id = Number(formData.get("id"))
+
+    const result = createUserSchema.safeParse({ name, email })
+    if (!result.success) {
+      return { errors: result.error.flatten().fieldErrors }
+    }
+
+    updateUser(id, result.data.name, result.data.email)
     return { success: true }
   }
 

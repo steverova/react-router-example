@@ -1,15 +1,13 @@
 import { useEffect } from "react"
-import { useLoaderData, useFetcher } from "react-router"
-import { useForm } from "react-hook-form"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { createUserSchema, type CreateUserInput } from "../user.schema"
+import { useLoaderData, useFetcher, useNavigate, Link } from "react-router"
+import type { ColumnDef, Row } from "@tanstack/react-table"
+import { PencilIcon, TrashIcon } from "lucide-react"
 import { Button } from "~/components/ui/button"
-import { Input } from "~/components/ui/input"
-import { Label } from "~/components/ui/label"
 import { toast } from "sonner"
 import { useAlertDialog } from "~/components/providers/alert-dialog-provider"
 import { userLoader as loader } from "./user.loader"
 import { userAction as action } from "./user.action"
+import { DataTable } from "~/components/shared/data-table"
 
 export { loader, action }
 
@@ -26,122 +24,78 @@ export function meta() {
   return [{ title: "Users" }]
 }
 
-export default function UserPage() {
-  const { users } = useLoaderData<typeof loader>()
+function UserActions({ row }: { row: Row<User> }) {
   const fetcher = useFetcher<typeof action>()
-  const {
-    register,
-    handleSubmit,
-    reset,
-    formState: { errors },
-  } = useForm<CreateUserInput>({
-    resolver: zodResolver(createUserSchema),
-    defaultValues: {
-      name: "",
-      email: "",
-    },
-  })
+  const { confirm } = useAlertDialog()
 
-  const { confirm  } = useAlertDialog()
+  const user = row.original
+  const isDeleting =
+    fetcher.formData?.get("intent") === "delete" &&
+    Number(fetcher.formData.get("id")) === user.id
 
-  const isCreating = fetcher.formData?.get("intent") === "create"
-
-  const deletingId = fetcher.formData?.get("intent") === "delete"
-    ? Number(fetcher.formData.get("id"))
-    : null
-
-  useEffect(() => {
-    if (fetcher.state === "idle" && fetcher.data) {
-      if (fetcher.data.errors) {
-        toast.error("Error creating user")
-      } else if (fetcher.data.success) {
-        toast.success("User created successfully")
-      }
-    }
-  }, [fetcher.state, fetcher.data])
-
-  const onSubmit = (data: CreateUserInput) => {
-    fetcher.submit({ ...data, intent: "create" }, { method: "post" })
-    reset()
-  }
-
-  const onDelete = async (id: number, name: string) => {
+  const onDelete = async () => {
     const ok = await confirm({
       title: "Delete user",
-      description: `Are you sure you want to delete ${name}? This action cannot be undone.`,
+      description: `Are you sure you want to delete ${user.name}? This action cannot be undone.`,
       confirmText: "Delete",
       cancelText: "Cancel",
     })
-
     if (ok) {
       fetcher.submit(
-        { intent: "delete", id: String(id) },
+        { intent: "delete", id: String(user.id) },
         { method: "post" }
       )
     }
   }
 
+  useEffect(() => {
+    if (fetcher.state === "idle" && fetcher.data) {
+      if (fetcher.data.success) {
+        toast.success("User deleted successfully")
+      } else if (fetcher.data.errors) {
+        toast.error("Error deleting user")
+      }
+    }
+  }, [fetcher.state, fetcher.data])
+
   return (
-    <div className="flex min-h-svh items-center justify-center p-6">
-      <div className="flex w-full max-w-lg min-w-0 flex-col gap-4 text-sm leading-loose">
-        <div>
-          <h1 className="font-medium">Users</h1>
-          <form onSubmit={handleSubmit(onSubmit)} className="mt-4 flex flex-col gap-4">
-            <div className="flex flex-col gap-2">
-              <Label htmlFor="name">Name</Label>
-              <Input
-                id="name"
-                {...register("name")}
-                placeholder="Enter name"
-                className="w-full"
-                disabled={isCreating}
-              />
-              {errors.name && (
-                <p className="text-red-500 text-xs">{errors.name.message}</p>
-              )}
-            </div>
-            <div className="flex flex-col gap-2">
-              <Label htmlFor="email">Email</Label>
-              <Input
-                id="email"
-                type="email"
-                {...register("email")}
-                placeholder="Enter email"
-                className="w-full"
-                disabled={isCreating}
-              />
-              {errors.email && (
-                <p className="text-red-500 text-xs">{errors.email.message}</p>
-              )}
-            </div>
-            <Button type="submit" className="w-full" disabled={isCreating}>
-              {isCreating ? "Adding..." : "Add User"}
-            </Button>
-          </form>
-        </div>
-        <div>
-          <h2 className="font-medium">User List</h2>
-          {users.length === 0 ? (
-            <p>No users found.</p>
-          ) : (
-            <ul className="mt-2 list-disc pl-4">
-              {users.map((user: User) => (
-                <li key={user.id} className="flex items-center justify-between">
-                  <span>{user.name} - {user.email}</span>
-                  <Button
-                    variant="destructive"
-                    size="sm"
-                    disabled={deletingId === user.id}
-                    onClick={() => onDelete(user.id, user.name)}
-                  >
-                    {deletingId === user.id ? "Deleting..." : "Delete"}
-                  </Button>
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
-      </div>
+    <div className="flex items-center gap-2">
+      <Link to={`/users/${user.id}/edit-record`}>
+        <Button variant="outline" size="icon">
+          <PencilIcon className="h-4 w-4" />
+        </Button>
+      </Link>
+      <Button
+        variant="destructive"
+        size="icon"
+        onClick={onDelete}
+        disabled={isDeleting}
+      >
+        <TrashIcon className="h-4 w-4" />
+      </Button>
+    </div>
+  )
+}
+
+export default function UserPage() {
+  const navigate = useNavigate()
+  const { users } = useLoaderData<typeof loader>()
+
+  const columns: ColumnDef<User>[] = [
+    { accessorKey: "name", header: "Name" },
+    { accessorKey: "email", header: "Email" },
+    { accessorKey: "role", header: "Role" },
+  ]
+
+  return (
+    <div className="py-2">
+      <DataTable
+        title="Users"
+        data={users}
+        columns={columns}
+        rowActions={UserActions}
+        onAdd={() => navigate("/users/new-record")}
+      />
     </div>
   )
 }

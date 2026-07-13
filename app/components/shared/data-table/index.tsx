@@ -1,22 +1,4 @@
 import {
-	closestCenter,
-	DndContext,
-	type DragEndEvent,
-	KeyboardSensor,
-	MouseSensor,
-	TouchSensor,
-	type UniqueIdentifier,
-	useSensor,
-	useSensors
-} from '@dnd-kit/core'
-import { restrictToVerticalAxis } from '@dnd-kit/modifiers'
-import {
-	SortableContext,
-	useSortable,
-	verticalListSortingStrategy
-} from '@dnd-kit/sortable'
-import { CSS } from '@dnd-kit/utilities'
-import {
 	type Column,
 	type ColumnDef,
 	type ColumnFiltersState,
@@ -33,7 +15,6 @@ import {
 	useReactTable,
 	type VisibilityState
 } from '@tanstack/react-table'
-import ExcelJS from 'exceljs'
 import {
 	ArrowDownIcon,
 	ArrowLeftToLineIcon,
@@ -92,37 +73,6 @@ interface DataTableProps<TData, TValue> {
 	rowActions?: React.ComponentType<{ row: Row<TData> }>
 	onExport?: boolean
 	exportFileName?: string
-}
-
-function DraggableRow<TData>({ row }: { row: Row<TData> }) {
-	const id = (row.original as Record<string, unknown>)?.id
-	const { transform, transition, setNodeRef, isDragging } = useSortable({
-		id: id as string | number
-	})
-	return (
-		<TableRow
-			data-state={row.getIsSelected() && 'selected'}
-			data-dragging={isDragging}
-			ref={setNodeRef}
-			className='relative z-0 data-[dragging=true]:z-10 data-[dragging=true]:opacity-80'
-			style={{
-				transform: CSS.Transform.toString(transform),
-				transition: transition
-			}}
-		>
-			{row.getVisibleCells().map((cell) => {
-				const isActions = cell.column.id === 'actions'
-				return (
-					<TableCell
-						key={cell.id}
-						className={isActions ? 'sticky right-0 z-10 bg-background' : ''}
-					>
-						{flexRender(cell.column.columnDef.cell, cell.getContext())}
-					</TableCell>
-				)
-			})}
-		</TableRow>
-	)
 }
 
 function TableSkeleton({
@@ -261,7 +211,6 @@ export function DataTable<TData, TValue>({
 			setTableContentWidth(el.scrollWidth)
 		})
 		observer.observe(el)
-		// Also observe children changes
 		const mutationObserver = new MutationObserver(() => {
 			setTableContentWidth(el.scrollWidth)
 		})
@@ -271,21 +220,6 @@ export function DataTable<TData, TValue>({
 			mutationObserver.disconnect()
 		}
 	}, [])
-
-	const sortableId = React.useId()
-	const sensors = useSensors(
-		useSensor(MouseSensor, {}),
-		useSensor(TouchSensor, {}),
-		useSensor(KeyboardSensor, {})
-	)
-
-	const dataIds = React.useMemo<UniqueIdentifier[]>(
-		() =>
-			(data as Record<string, unknown>[])?.map(
-				(item) => item.id as string | number
-			) || [],
-		[data]
-	)
 
 	const tableColumns = React.useMemo<ColumnDef<TData, TValue>[]>(() => {
 		const cols = [...columns]
@@ -298,7 +232,7 @@ export function DataTable<TData, TValue>({
 			})
 		}
 		return cols
-	}, [columns, RowActions])
+	}, [])
 
 	const table = useReactTable({
 		data,
@@ -347,14 +281,8 @@ export function DataTable<TData, TValue>({
 		}
 	}, [])
 
-	function handleDragEnd(event: DragEndEvent) {
-		const { active, over } = event
-		if (active && over && active.id !== over.id) {
-			// Drag reordering is handled by parent via onRefetch if needed
-		}
-	}
-
 	async function handleExport() {
+		const { default: ExcelJS } = await import('exceljs')
 		const workbook = new ExcelJS.Workbook()
 		const worksheet = workbook.addWorksheet('Data')
 
@@ -372,11 +300,7 @@ export function DataTable<TData, TValue>({
 			}
 			const header = (col.columnDef.header as string) ?? col.id
 			const key = colDef.accessorKey ?? col.id
-			return {
-				header,
-				key,
-				width: 20
-			}
+			return { header, key, width: 20 }
 		})
 
 		const filteredRows = table.getFilteredRowModel().rows
@@ -408,7 +332,7 @@ export function DataTable<TData, TValue>({
 		<div className='flex h-full flex-col'>
 			<div className='flex items-center justify-between px-3 mb-2'>
 				<div className='flex items-center gap-2'>
-					{title && <h2 className='text-lg font-semibold'>{title}</h2>}
+					{title && <h1 className='text-2xl font-semibold'>{title}</h1>}
 				</div>
 				<div className='flex items-center gap-2'>
 					{onRefetch && (
@@ -455,7 +379,7 @@ export function DataTable<TData, TValue>({
 						</DropdownMenuContent>
 					</DropdownMenu>
 					{onAdd && (
-						<Button variant='outline' size='sm' onClick={onAdd}>
+						<Button variant='default' size='sm' onClick={onAdd}>
 							<PlusIcon />
 							<span className='hidden lg:inline'>Add</span>
 						</Button>
@@ -471,78 +395,80 @@ export function DataTable<TData, TValue>({
 			<div className='min-h-0 flex-1 overflow-hidden px-3'>
 				<div className='flex h-full flex-col'>
 					<div className='min-h-0 flex-1 overflow-hidden rounded-t-lg border'>
-						<DndContext
-							collisionDetection={closestCenter}
-							modifiers={[restrictToVerticalAxis]}
-							onDragEnd={handleDragEnd}
-							sensors={sensors}
-							id={sortableId}
+						<div
+							ref={tableContainerRef}
+							className='h-full overflow-y-auto overflow-x-auto scrollbar-none'
 						>
-							<div
-								ref={tableContainerRef}
-								className='h-full overflow-y-auto overflow-x-auto scrollbar-none'
-							>
-								<Table className='min-w-max'>
-									<TableHeader className='sticky top-0 z-10 bg-muted'>
-										{table.getHeaderGroups().map((headerGroup) => (
-											<TableRow key={headerGroup.id}>
-												{headerGroup.headers.map((header) => {
-													const isActions = header.column.id === 'actions'
-													return (
-														<TableHead
-															key={header.id}
-															colSpan={header.colSpan}
-															className={
-																isActions ? 'sticky right-0 z-20 bg-muted' : ''
-															}
-														>
-															{header.isPlaceholder ? null : header.column.getCanSort() ||
-																header.column.getCanPin() ? (
-																<ColumnHeader
-																	column={header.column}
-																	header={flexRender(
-																		header.column.columnDef.header,
-																		header.getContext()
-																	)}
-																/>
-															) : (
-																flexRender(
+							<Table className='min-w-max'>
+								<TableHeader className='sticky top-0 z-10 bg-muted'>
+									{table.getHeaderGroups().map((headerGroup) => (
+										<TableRow key={headerGroup.id}>
+											{headerGroup.headers.map((header) => {
+												const isActions = header.column.id === 'actions'
+												return (
+													<TableHead
+														key={header.id}
+														colSpan={header.colSpan}
+														className={
+															isActions ? 'sticky right-0 z-20 bg-muted' : ''
+														}
+													>
+														{header.isPlaceholder ? null : header.column.getCanSort() ||
+															header.column.getCanPin() ? (
+															<ColumnHeader
+																column={header.column}
+																header={flexRender(
 																	header.column.columnDef.header,
 																	header.getContext()
-																)
-															)}
-														</TableHead>
+																)}
+															/>
+														) : (
+															flexRender(
+																header.column.columnDef.header,
+																header.getContext()
+															)
+														)}
+													</TableHead>
+												)
+											})}
+										</TableRow>
+									))}
+								</TableHeader>
+								<TableBody className='**:data-[slot=table-cell]:first:w-8'>
+									{isLoading ? (
+										<TableSkeleton columnCount={tableColumns.length} />
+									) : table.getRowModel().rows?.length ? (
+										table.getRowModel().rows.map((row) => (
+											<TableRow
+												key={row.id}
+												data-state={row.getIsSelected() && 'selected'}
+											>
+												{row.getVisibleCells().map((cell) => {
+													const isActions = cell.column.id === 'actions'
+													return (
+														<TableCell
+															key={cell.id}
+															className={isActions ? 'sticky right-0 z-10 bg-background' : ''}
+														>
+															{flexRender(cell.column.columnDef.cell, cell.getContext())}
+														</TableCell>
 													)
 												})}
 											</TableRow>
-										))}
-									</TableHeader>
-									<TableBody className='**:data-[slot=table-cell]:first:w-8'>
-										{isLoading ? (
-											<TableSkeleton columnCount={tableColumns.length} />
-										) : table.getRowModel().rows?.length ? (
-											<SortableContext
-												items={dataIds}
-												strategy={verticalListSortingStrategy}
+										))
+									) : (
+										<TableRow>
+											<TableCell
+												colSpan={tableColumns.length}
+												className='h-24 text-center'
 											>
-												{table.getRowModel().rows.map((row) => (
-													<DraggableRow key={row.id} row={row} />
-												))}
-											</SortableContext>
-										) : (
-											<TableRow>
-												<TableCell
-													colSpan={tableColumns.length}
-													className='h-24 text-center'
-												>
-													No results.
-												</TableCell>
-											</TableRow>
-										)}
-									</TableBody>
-								</Table>
-							</div>
-						</DndContext>
+												No results.
+											</TableCell>
+										</TableRow>
+									)}
+								</TableBody>
+							</Table>
+						</div>
 					</div>
 					<div className='shrink-0 rounded-b-lg border border-t-0'>
 						<div

@@ -20,3 +20,7 @@ export function createUser(name: string, email: string) {
 export function deleteUser(id: number) {
   return sqlite.delete(users).where(eq(users.id, id)).run()
 }
+
+export function updateUser(id: number, name: string, email: string) {
+  return sqlite.update(users).set({ name, email }).where(eq(users.id, id)).run()
+}

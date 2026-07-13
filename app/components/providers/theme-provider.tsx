@@ -84,15 +84,18 @@ export function ThemeProvider({
   disableTransitionOnChange = true,
   ...props
 }: ThemeProviderProps) {
-  const [theme, setThemeState] = React.useState<Theme>(() => {
-    if (typeof window === "undefined") return defaultTheme
+  // Always start with defaultTheme to match SSR — localStorage is read
+  // in useEffect (client-only) to avoid hydration mismatch.
+  const [theme, setThemeState] = React.useState<Theme>(defaultTheme)
+
+  // Sync from localStorage after first render (client-only)
+  React.useEffect(() => {
     const storedTheme = localStorage.getItem(storageKey)
     if (isTheme(storedTheme)) {
-      return storedTheme
+      setThemeState(storedTheme)
     }
-
-    return defaultTheme
-  })
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   const setTheme = React.useCallback(
     (nextTheme: Theme) => {
