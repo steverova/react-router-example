@@ -22,6 +22,8 @@ export async function loader({ request }: { request: Request }) {
   return { user }
 }
 
+  export const shouldRevalidate = () => false
+
 export default function Layout() {
   const { user } = useLoaderData<typeof loader>()
   const setUser = useAuthStore((s) => s.setUser)
