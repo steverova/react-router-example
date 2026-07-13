@@ -5,12 +5,11 @@ import { LoaderCircle, PencilIcon, TrashIcon } from "lucide-react"
 import { Button } from "~/components/ui/button"
 import { toast } from "sonner"
 import { useAlertDialog } from "~/components/providers/alert-dialog-provider"
+import type { action } from "../actions/delete-user.action"
 import { userLoader as loader } from "./user.loader"
-import { userAction as action } from "./user.action"
 import { DataTable } from "~/components/shared/data-table"
 
-export { loader, action }
-
+export { loader }
 interface User {
   id: number
   publicId: string
@@ -42,8 +41,8 @@ function UserActions({ row }: { row: Row<User> }) {
     })
     if (ok) {
       fetcher.submit(
-        { intent: "delete", id: String(user.id) },
-        { method: "post" }
+        { id: String(user.id) },
+        { method: "post", action: "/users/actions/delete" }
       )
     }
   }
@@ -52,8 +51,6 @@ function UserActions({ row }: { row: Row<User> }) {
     if (fetcher.state === "idle" && fetcher.data) {
       if (fetcher.data.success) {
         toast.success("User deleted successfully")
-      } else if (fetcher.data.errors) {
-        toast.error("Error deleting user")
       }
     }
   }, [fetcher.state, fetcher.data])

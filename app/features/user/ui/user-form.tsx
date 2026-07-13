@@ -3,14 +3,15 @@ import { useLoaderData, useFetcher, useParams, Link } from "react-router"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { createUserSchema, type CreateUserInput } from "../user.schema"
+import type { action as createAction } from "../actions/create-user.action"
+import type { action as editAction } from "../actions/edit-user.action"
 import { Button } from "~/components/ui/button"
 import { Input } from "~/components/ui/input"
 import { Label } from "~/components/ui/label"
 import { toast } from "sonner"
 import { userLoader as loader } from "./user.loader"
-import { userAction as action } from "./user.action"
 
-export { loader, action }
+export { loader }
 
 export function meta() {
   return [{ title: "User Form" }]
@@ -20,7 +21,7 @@ export default function UserFormPage() {
   // loader ya retorna `user` directamente cuando hay params.id
   const { user } = useLoaderData<typeof loader>()
   const params = useParams()
-  const fetcher = useFetcher<typeof action>()
+  const fetcher = useFetcher<typeof createAction | typeof editAction>()
 
   const isEditMode = Boolean(params.id)
   const userId = params.id ? Number(params.id) : null
@@ -39,8 +40,7 @@ export default function UserFormPage() {
   })
 
   const isSubmitting =
-    fetcher.formData?.get("intent") === "create" ||
-    fetcher.formData?.get("intent") === "edit"
+    fetcher.state === "submitting"
 
   useEffect(() => {
     if (fetcher.state === "idle" && fetcher.data) {
@@ -59,16 +59,15 @@ export default function UserFormPage() {
   }, [fetcher.state, fetcher.data, isEditMode])
 
   const onSubmit = (data: CreateUserInput) => {
-    const intent = isEditMode ? "edit" : "create"
     if (isEditMode && userId) {
       fetcher.submit(
-        { ...data, intent, id: String(userId) },
-        { method: "post", action: `/users/${userId}/edit-record` }
+        { ...data, id: String(userId) },
+        { method: "post", action: "/users/actions/edit" }
       )
     } else {
       fetcher.submit(
-        { ...data, intent },
-        { method: "post", action: "/users/new-record" }
+        { ...data },
+        { method: "post", action: "/users/actions/create" }
       )
     }
   }

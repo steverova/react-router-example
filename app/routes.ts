@@ -7,6 +7,12 @@ export default [
   route("about", "./pages/about/index.tsx"),
   route("login", "./features/login/ui/login-page.tsx"),
   route("logout", "./routes/logout.tsx"),
+
+  // actions de usuarios (solo POST, sin UI)
+  route("users/actions/create", "./features/user/actions/create-user.action.ts"),
+  route("users/actions/edit", "./features/user/actions/edit-user.action.ts"),
+  route("users/actions/delete", "./features/user/actions/delete-user.action.ts"),
+
   layout("./components/blocks/layout/index.tsx", [
     index("routes/home.tsx"),
     route("table-example", "./features/table-example.tsx"),
