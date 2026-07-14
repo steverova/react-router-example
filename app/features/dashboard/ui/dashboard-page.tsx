@@ -8,6 +8,7 @@ import type { ColumnDef } from '@tanstack/react-table'
 import { ChartAreaInteractive } from './chart-area-interactive'
 import { DataTable } from '~/components/shared/data-table'
 import { SectionCards } from './sections-cards'
+import { MapWithMarkers } from './map'
 
 export function loader() {
   return {}
@@ -75,6 +76,7 @@ export default function DashboardPage() {
 					<SectionCards />
 					<div className='px-4 lg:px-6'>
 						<ChartAreaInteractive />
+						<MapWithMarkers/>
 					</div>
 					<DataTable
 						title='Sections'
