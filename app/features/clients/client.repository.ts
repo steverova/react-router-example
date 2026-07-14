@@ -24,6 +24,7 @@ export function createClientInDb(data: {
   email: string
   phone?: string
   notes?: string
+  status?: string
 }) {
   return sqlite.insert(clients).values(data).run()
 }
@@ -41,6 +42,7 @@ export function updateClientInDb(
     email: string
     phone?: string
     notes?: string
+    status?: string
   }
 ) {
   return sqlite.update(clients).set(data).where(eq(clients.id, id)).run()

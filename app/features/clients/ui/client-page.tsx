@@ -1,9 +1,10 @@
 import { useEffect } from "react"
 import { useLoaderData, useFetcher, useNavigate, Link } from "react-router"
 import type { ColumnDef, Row } from "@tanstack/react-table"
-import { LoaderCircle, PencilIcon, TrashIcon } from "lucide-react"
+import { LoaderCircle, PencilIcon, TrashIcon, FolderKanban, ListTodo, User2 } from "lucide-react"
 import { Button } from "~/components/ui/button"
 import { Badge } from "~/components/ui/badge"
+import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "~/components/ui/tooltip"
 import { toast } from "sonner"
 import { useAlertDialog } from "~/components/providers/alert-dialog-provider"
 import type { action } from "../actions/delete-client.action"
@@ -61,25 +62,65 @@ function ClientActions({ row }: { row: Row<Client> }) {
   }, [fetcher.state, fetcher.data])
 
   return (
-    <div className="flex items-center gap-2">
-      <Link to={`/clients/${client.id}/edit-record`}>
-        <Button variant="outline" size="icon">
-          <PencilIcon className="h-4 w-4" />
-        </Button>
-      </Link>
-      <Button
-        variant="destructive"
-        size="icon"
-        onClick={onDelete}
-        disabled={isDeleting}
-      >
-        {isDeleting ? (
-          <LoaderCircle className="animate-spin" />
-        ) : (
-          <TrashIcon className="h-4 w-4" />
-        )}
-      </Button>
-    </div>
+    <TooltipProvider>
+      <div className="flex items-center gap-2">
+        <Tooltip>
+          <TooltipTrigger render={<Link to={`/clients/${client.id}/edit-record`} />}>
+            <Button variant="outline" size="icon">
+              <PencilIcon className="h-4 w-4" />
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent>Edit client</TooltipContent>
+        </Tooltip>
+
+        <Tooltip>
+          <TooltipTrigger render={<Link to={`/users?client=${client.id}`} />}>
+            <Button variant="outline" size="icon">
+              <User2 className="h-4 w-4" />
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent>View users</TooltipContent>
+        </Tooltip>
+
+        <Tooltip>
+          <TooltipTrigger render={<Link to={`/projects?client=${client.id}`} />}>
+            <Button variant="outline" size="icon">
+              <FolderKanban className="h-4 w-4" />
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent>View projects</TooltipContent>
+        </Tooltip>
+
+        <Tooltip>
+          <TooltipTrigger render={<Link to={`/activities?client=${client.id}`} />}>
+            <Button variant="outline" size="icon">
+              <ListTodo className="h-4 w-4" />
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent>View activities</TooltipContent>
+        </Tooltip>
+
+        <Tooltip>
+          <TooltipTrigger
+            render={
+              <Button
+                variant="destructive"
+                size="icon"
+                onClick={onDelete}
+                disabled={isDeleting}
+              />
+            }
+          >
+            {isDeleting ? (
+              <LoaderCircle className="animate-spin" />
+            ) : (
+              <TrashIcon className="h-4 w-4" />
+            )}
+          </TooltipTrigger>
+          <TooltipContent>Delete client</TooltipContent>
+        </Tooltip>
+      </div>
+    </TooltipProvider>
   )
 }
 

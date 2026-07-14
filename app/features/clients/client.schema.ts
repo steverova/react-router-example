@@ -11,6 +11,7 @@ export const createClientSchema = z.object({
   email: z.string().email("Invalid email"),
   phone: z.string().max(50).optional().or(z.literal("")),
   notes: z.string().optional().or(z.literal("")),
+  status: z.enum(["active", "inactive"]).default("active"),
 })
 
 export type CreateClientInput = z.infer<typeof createClientSchema>

@@ -27,6 +27,12 @@ export default [
     route("clients", "./features/clients/ui/client-page.tsx"),
     route("clients/new-record", "./features/clients/ui/client-form.tsx", { id: "clients-new" }),
     route("clients/:id/edit-record", "./features/clients/ui/client-form.tsx", { id: "clients-edit" }),
+    route("projects", "./features/projects/ui/project-page.tsx"),
+    route("projects/new-record", "./features/projects/ui/project-form.tsx", { id: "projects-new" }),
+    route("projects/:id/edit-record", "./features/projects/ui/project-form.tsx", { id: "projects-edit" }),
+    route("activities", "./features/activities/ui/activity-page.tsx"),
+    route("activities/new-record", "./features/activities/ui/activity-form.tsx", { id: "activities-new" }),
+    route("activities/:id/edit-record", "./features/activities/ui/activity-form.tsx", { id: "activities-edit" }),
     route("dashboard", "./features/dashboard/ui/dashboard-page.tsx", {}),
   ]),
 ] satisfies RouteConfig

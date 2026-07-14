@@ -1,7 +1,7 @@
 import { useEffect } from "react"
 import { useLoaderData, useFetcher, useNavigate, Link } from "react-router"
 import type { ColumnDef, Row } from "@tanstack/react-table"
-import { LoaderCircle, PencilIcon, TrashIcon } from "lucide-react"
+import { LoaderCircle, PencilIcon, TrashIcon, ListTodo, Handshake } from "lucide-react"
 import { Button } from "~/components/ui/button"
 import { toast } from "sonner"
 import { useAlertDialog } from "~/components/providers/alert-dialog-provider"
@@ -62,6 +62,16 @@ function UserActions({ row }: { row: Row<User> }) {
           <PencilIcon className="h-4 w-4" />
         </Button>
       </Link>
+      <Link to={`/clients?user=${user.id}`}>
+        <Button variant="outline" size="icon">
+          <Handshake className="h-4 w-4" />
+        </Button>
+      </Link>
+      <Link to={`/activities?user=${user.id}`}>
+        <Button variant="outline" size="icon">
+          <ListTodo className="h-4 w-4" />
+        </Button>
+      </Link>
       <Button
         variant="destructive"
         size="icon"
@@ -69,8 +79,6 @@ function UserActions({ row }: { row: Row<User> }) {
         disabled={isDeleting}
       >
         {isDeleting ? <LoaderCircle className="animate-spin"/> : <TrashIcon className="h-4 w-4" />  }
-
-
       </Button>
     </div>
   )

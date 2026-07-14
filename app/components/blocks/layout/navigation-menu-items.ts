@@ -4,8 +4,10 @@ import {
 	Archive,
 	Calendar,
 	CalendarDays,
+	FolderKanban,
 	Handshake,
 	LayoutDashboard,
+	ListTodo,
 	Puzzle,
 	Table,
 	Table2,
@@ -52,6 +54,24 @@ const navigation: NavigationItem[] = [
 		label: 'Clients',
 		type: 'item',
 		icon: Handshake,
+		authorization: {
+			roles: ['admin', 'user'],
+		},
+  },
+  {
+		path: '/projects',
+		label: 'Projects',
+		type: 'item',
+		icon: FolderKanban,
+		authorization: {
+			roles: ['admin', 'user'],
+		},
+  },
+  {
+		path: '/activities',
+		label: 'Activities',
+		type: 'item',
+		icon: ListTodo,
 		authorization: {
 			roles: ['admin', 'user'],
 		},

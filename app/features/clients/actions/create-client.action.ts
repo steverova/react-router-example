@@ -17,6 +17,7 @@ export async function action({ request }: { request: Request }) {
     email: formData.get("email") as string,
     phone: (formData.get("phone") as string) || undefined,
     notes: (formData.get("notes") as string) || undefined,
+    status: (formData.get("status") as "active" | "inactive") || "active",
   }
 
   const result = createClientSchema.safeParse(data)

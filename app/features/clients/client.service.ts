@@ -25,6 +25,7 @@ export function registerClient(data: {
   email: string
   phone?: string
   notes?: string
+  status?: string
 }) {
   return createClientInDb(data)
 }
@@ -42,6 +43,7 @@ export function updateClient(
     email: string
     phone?: string
     notes?: string
+    status?: string
   }
 ) {
   return updateClientInDb(id, data)

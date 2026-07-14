@@ -7,12 +7,14 @@ import { createClientSchema, type CreateClientInput } from "../client.schema"
 import type { action as createAction } from "../actions/create-client.action"
 import type { action as editAction } from "../actions/edit-client.action"
 import { Button } from "~/components/ui/button"
+import { Checkbox } from "~/components/ui/checkbox"
 import { Input } from "~/components/ui/input"
 import { Textarea } from "~/components/ui/textarea"
 import {
   Field,
   FieldGroup,
   FieldLabel,
+  FieldDescription,
   FieldError,
 } from "~/components/ui/field"
 import { toast } from "sonner"
@@ -60,6 +62,7 @@ export default function ClientFormPage() {
       email: client?.email ?? "",
       phone: client?.phone ?? "",
       notes: client?.notes ?? "",
+      status: (client?.status as "active" | "inactive") ?? "active",
     },
   })
 
@@ -311,6 +314,32 @@ export default function ClientFormPage() {
                     className="min-h-[80px]"
                     disabled={isSubmitting}
                   />
+                  {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                </Field>
+              )}
+            />
+
+            <Controller
+              name="status"
+              control={form.control}
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <div className="flex items-center gap-2">
+                    <Checkbox
+                      id="client-status"
+                      checked={field.value === "active"}
+                      onCheckedChange={(checked) =>
+                        field.onChange(checked ? "active" : "inactive")
+                      }
+                      disabled={isSubmitting}
+                    />
+                    <FieldLabel htmlFor="client-status" className="font-normal">
+                      Active client
+                    </FieldLabel>
+                  </div>
+                  <FieldDescription>
+                    Inactive clients cannot be assigned to new projects.
+                  </FieldDescription>
                   {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
                 </Field>
               )}
