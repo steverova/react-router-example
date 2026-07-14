@@ -8,6 +8,9 @@ export default [
   route("login", "./features/login/ui/login-page.tsx"),
   route("logout", "./routes/logout.tsx"),
 
+  // API endpoints
+  route("api/clients", "./routes/api.clients.ts"),
+
   // actions de usuarios (solo POST, sin UI)
   route("users/actions/create", "./features/user/actions/create-user.action.ts"),
   route("users/actions/edit", "./features/user/actions/edit-user.action.ts"),
@@ -17,6 +20,11 @@ export default [
   route("clients/actions/create", "./features/clients/actions/create-client.action.ts"),
   route("clients/actions/edit", "./features/clients/actions/edit-client.action.ts"),
   route("clients/actions/delete", "./features/clients/actions/delete-client.action.ts"),
+
+  // actions de proyectos (solo POST, sin UI)
+  route("projects/actions/create", "./features/projects/actions/create-project.action.ts"),
+  route("projects/actions/edit", "./features/projects/actions/edit-project.action.ts"),
+  route("projects/actions/delete", "./features/projects/actions/delete-project.action.ts"),
 
   layout("./components/blocks/layout/index.tsx", [
     index("routes/home.tsx"),
