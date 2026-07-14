@@ -48,6 +48,15 @@ const navigation: NavigationItem[] = [
 		},
   },
   {
+		path: '/clients',
+		label: 'Clients',
+		type: 'item',
+		icon: Handshake,
+		authorization: {
+			roles: ['admin', 'user'],
+		},
+  },
+  {
 		path: '/table-example',
 		label: 'Table Example',
 		type: 'item',

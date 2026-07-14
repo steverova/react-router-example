@@ -1,0 +1,30 @@
+import { requireAuth } from "~/session.server"
+import { createClientSchema } from "../client.schema"
+import { registerClient } from "../client.service"
+
+export async function action({ request }: { request: Request }) {
+  await requireAuth(request)
+  const formData = await request.formData()
+
+  const data = {
+    entityType: formData.get("entityType") as string,
+    legalName: formData.get("legalName") as string,
+    tradeName: (formData.get("tradeName") as string) || undefined,
+    taxId: (formData.get("taxId") as string) || undefined,
+    country: (formData.get("country") as string) || undefined,
+    stateProvince: (formData.get("stateProvince") as string) || undefined,
+    city: (formData.get("city") as string) || undefined,
+    address: (formData.get("address") as string) || undefined,
+    postalCode: (formData.get("postalCode") as string) || undefined,
+    email: formData.get("email") as string,
+    phone: (formData.get("phone") as string) || undefined,
+  }
+
+  const result = createClientSchema.safeParse(data)
+  if (!result.success) {
+    return { errors: result.error.flatten().fieldErrors }
+  }
+
+  registerClient(result.data)
+  return { success: true }
+}
