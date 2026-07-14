@@ -20,12 +20,11 @@ export function registerClient(data: {
   tradeName?: string
   taxId?: string
   country?: string
-  stateProvince?: string
-  city?: string
   address?: string
   postalCode?: string
   email: string
   phone?: string
+  notes?: string
 }) {
   return createClientInDb(data)
 }
@@ -38,12 +37,11 @@ export function updateClient(
     tradeName?: string
     taxId?: string
     country?: string
-    stateProvince?: string
-    city?: string
     address?: string
     postalCode?: string
     email: string
     phone?: string
+    notes?: string
   }
 ) {
   return updateClientInDb(id, data)

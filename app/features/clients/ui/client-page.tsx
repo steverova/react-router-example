@@ -19,7 +19,6 @@ interface Client {
   tradeName: string | null
   taxId: string | null
   country: string | null
-  city: string | null
   email: string
   phone: string | null
   status: string | null
@@ -120,7 +119,6 @@ export default function ClientPage() {
     },
     { accessorKey: "email", header: "Email" },
     { accessorKey: "country", header: "Country" },
-    { accessorKey: "city", header: "City" },
     {
       accessorKey: "status",
       header: "Status",

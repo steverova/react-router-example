@@ -19,12 +19,11 @@ export function createClientInDb(data: {
   tradeName?: string
   taxId?: string
   country?: string
-  stateProvince?: string
-  city?: string
   address?: string
   postalCode?: string
   email: string
   phone?: string
+  notes?: string
 }) {
   return sqlite.insert(clients).values(data).run()
 }
@@ -37,12 +36,11 @@ export function updateClientInDb(
     tradeName?: string
     taxId?: string
     country?: string
-    stateProvince?: string
-    city?: string
     address?: string
     postalCode?: string
     email: string
     phone?: string
+    notes?: string
   }
 ) {
   return sqlite.update(clients).set(data).where(eq(clients.id, id)).run()

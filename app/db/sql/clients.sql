@@ -5,12 +5,11 @@ CREATE TABLE IF NOT EXISTS clients (
   trade_name TEXT,
   tax_id TEXT,
   country TEXT,
-  state_province TEXT,
-  city TEXT,
   address TEXT,
   postal_code TEXT,
   email TEXT NOT NULL,
   phone TEXT,
+  notes TEXT,
   status TEXT DEFAULT 'active',
   created_at INTEGER DEFAULT (unixepoch()),
   updated_at INTEGER DEFAULT (unixepoch())

@@ -2,25 +2,19 @@ import { useEffect } from "react"
 import { useLoaderData, useFetcher, useParams, Link } from "react-router"
 import { Controller, useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
+import { ReactSelect } from "~/components/ui/react-select"
 import { createClientSchema, type CreateClientInput } from "../client.schema"
 import type { action as createAction } from "../actions/create-client.action"
 import type { action as editAction } from "../actions/edit-client.action"
 import { Button } from "~/components/ui/button"
 import { Input } from "~/components/ui/input"
+import { Textarea } from "~/components/ui/textarea"
 import {
   Field,
   FieldGroup,
   FieldLabel,
-  FieldDescription,
   FieldError,
 } from "~/components/ui/field"
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "~/components/ui/select"
 import { toast } from "sonner"
 import { clientLoader as loader } from "./client.loader"
 
@@ -29,6 +23,21 @@ export { loader }
 export function meta() {
   return [{ title: "Client Form" }]
 }
+
+const entityTypeOptions = [
+  { value: "legal_entity", label: "Company" },
+  { value: "person", label: "Person" },
+]
+
+const countryOptions = [
+  { value: "US", label: "United States" },
+  { value: "MX", label: "Mexico" },
+  { value: "CO", label: "Colombia" },
+  { value: "AR", label: "Argentina" },
+  { value: "CL", label: "Chile" },
+  { value: "PE", label: "Peru" },
+  { value: "ES", label: "Spain" },
+]
 
 export default function ClientFormPage() {
   const { client } = useLoaderData<typeof loader>()
@@ -46,16 +55,16 @@ export default function ClientFormPage() {
       tradeName: client?.tradeName ?? "",
       taxId: client?.taxId ?? "",
       country: client?.country ?? "",
-      stateProvince: client?.stateProvince ?? "",
-      city: client?.city ?? "",
       address: client?.address ?? "",
       postalCode: client?.postalCode ?? "",
       email: client?.email ?? "",
       phone: client?.phone ?? "",
+      notes: client?.notes ?? "",
     },
   })
 
   const isSubmitting = fetcher.state === "submitting"
+  const entityType = form.watch("entityType")
 
   useEffect(() => {
     if (fetcher.state === "idle" && fetcher.data) {
@@ -87,9 +96,9 @@ export default function ClientFormPage() {
   }
 
   return (
-    <div className="flex items-center justify-center p-2">
+    <div className="flex justify-center p-6">
       <div className="flex w-full min-w-0 flex-col gap-4 text-sm leading-loose">
-        <div className="flex items-center justify-between">
+        <div className="flex justify-between">
           <h1 className="font-medium text-lg">
             {isEditMode ? "Edit Client" : "Create New Client"}
           </h1>
@@ -102,28 +111,45 @@ export default function ClientFormPage() {
 
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className="mt-2 flex flex-col gap-4 p-2  rounded-lg"
+          className="mt-2 flex flex-col gap-4 p-2 rounded-lg"
         >
           <FieldGroup>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-3 gap-4">
               <Controller
                 name="entityType"
                 control={form.control}
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid}>
                     <FieldLabel>Entity Type</FieldLabel>
-                    <Select
-                      value={field.value}
-                      onValueChange={field.onChange}
-                    >
-                      <SelectTrigger aria-invalid={fieldState.invalid}>
-                        <SelectValue placeholder="Select type" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="legal_entity">Company</SelectItem>
-                        <SelectItem value="person">Person</SelectItem>
-                      </SelectContent>
-                    </Select>
+                    <ReactSelect
+                      inputId="entityType"
+                      options={entityTypeOptions}
+                      value={entityTypeOptions.find((o) => o.value === field.value)}
+                      onChange={(selected) => field.onChange(selected?.value)}
+                      isDisabled={isSubmitting}
+                      aria-invalid={fieldState.invalid}
+                    />
+                    {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                  </Field>
+                )}
+              />
+
+              <Controller
+                name="legalName"
+                control={form.control}
+                render={({ field, fieldState }) => (
+                  <Field data-invalid={fieldState.invalid}>
+                    <FieldLabel htmlFor="client-legalName">
+                      {entityType === "legal_entity" ? "Legal Name" : "Full Name"} *
+                    </FieldLabel>
+                    <Input
+                      {...field}
+                      id="client-legalName"
+                      aria-invalid={fieldState.invalid}
+                      placeholder="Enter legal name"
+                      autoComplete="off"
+                      disabled={isSubmitting}
+                    />
                     {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
                   </Field>
                 )}
@@ -150,28 +176,7 @@ export default function ClientFormPage() {
               />
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
-              <Controller
-                name="legalName"
-                control={form.control}
-                render={({ field, fieldState }) => (
-                  <Field data-invalid={fieldState.invalid}>
-                    <FieldLabel htmlFor="client-legalName">
-                      {form.watch("entityType") === "legal_entity" ? "Legal Name" : "Full Name"} *
-                    </FieldLabel>
-                    <Input
-                      {...field}
-                      id="client-legalName"
-                      aria-invalid={fieldState.invalid}
-                      placeholder="Enter legal name"
-                      autoComplete="off"
-                      disabled={isSubmitting}
-                    />
-                    {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-                  </Field>
-                )}
-              />
-
+            <div className="grid grid-cols-3 gap-4">
               <Controller
                 name="tradeName"
                 control={form.control}
@@ -186,21 +191,18 @@ export default function ClientFormPage() {
                       autoComplete="off"
                       disabled={isSubmitting}
                     />
-                    <FieldDescription>Optional commercial name</FieldDescription>
                     {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
                   </Field>
                 )}
               />
-            </div>
 
-            <div className="grid grid-cols-2 gap-4">
               <Controller
                 name="taxId"
                 control={form.control}
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid}>
                     <FieldLabel htmlFor="client-taxId">
-                      {form.watch("entityType") === "legal_entity" ? "Tax ID" : "ID Number"}
+                      {entityType === "legal_entity" ? "Tax ID" : "ID Number"}
                     </FieldLabel>
                     <Input
                       {...field}
@@ -241,60 +243,21 @@ export default function ClientFormPage() {
                 control={form.control}
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid}>
-                    <FieldLabel htmlFor="client-country">Country</FieldLabel>
-                    <Input
-                      {...field}
-                      id="client-country"
+                    <FieldLabel>Country *</FieldLabel>
+                    <ReactSelect
+                      inputId="client-country"
+                      options={countryOptions}
+                      value={countryOptions.find((o) => o.value === field.value)}
+                      onChange={(selected) => field.onChange(selected?.value)}
+                      isDisabled={isSubmitting}
+                      placeholder="Select country"
                       aria-invalid={fieldState.invalid}
-                      placeholder="Country"
-                      autoComplete="off"
-                      disabled={isSubmitting}
                     />
                     {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
                   </Field>
                 )}
               />
 
-              <Controller
-                name="stateProvince"
-                control={form.control}
-                render={({ field, fieldState }) => (
-                  <Field data-invalid={fieldState.invalid}>
-                    <FieldLabel htmlFor="client-stateProvince">State/Province</FieldLabel>
-                    <Input
-                      {...field}
-                      id="client-stateProvince"
-                      aria-invalid={fieldState.invalid}
-                      placeholder="State or province"
-                      autoComplete="off"
-                      disabled={isSubmitting}
-                    />
-                    {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-                  </Field>
-                )}
-              />
-
-              <Controller
-                name="city"
-                control={form.control}
-                render={({ field, fieldState }) => (
-                  <Field data-invalid={fieldState.invalid}>
-                    <FieldLabel htmlFor="client-city">City</FieldLabel>
-                    <Input
-                      {...field}
-                      id="client-city"
-                      aria-invalid={fieldState.invalid}
-                      placeholder="City"
-                      autoComplete="off"
-                      disabled={isSubmitting}
-                    />
-                    {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-                  </Field>
-                )}
-              />
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
               <Controller
                 name="address"
                 control={form.control}
@@ -319,7 +282,7 @@ export default function ClientFormPage() {
                 control={form.control}
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid}>
-                    <FieldLabel htmlFor="client-postalCode">Postal Code</FieldLabel>
+                    <FieldLabel htmlFor="client-postalCode">Postal Code *</FieldLabel>
                     <Input
                       {...field}
                       id="client-postalCode"
@@ -333,6 +296,25 @@ export default function ClientFormPage() {
                 )}
               />
             </div>
+
+            <Controller
+              name="notes"
+              control={form.control}
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <FieldLabel htmlFor="client-notes">Notes</FieldLabel>
+                  <Textarea
+                    {...field}
+                    id="client-notes"
+                    aria-invalid={fieldState.invalid}
+                    placeholder="Additional notes about the client..."
+                    className="min-h-[80px]"
+                    disabled={isSubmitting}
+                  />
+                  {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                </Field>
+              )}
+            />
           </FieldGroup>
 
           <Button type="submit" className="w-full" disabled={isSubmitting}>
