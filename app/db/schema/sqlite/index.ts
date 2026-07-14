@@ -1,6 +1,7 @@
 export { users } from './tables/users'
 export { clients } from './tables/clients'
 export { projects } from './tables/projects'
+export { activities } from './tables/activities'
 export { credentials } from './tables/credentials'
 export { loginAttempts } from './tables/loginAttempts'
 export { refreshTokens } from './tables/refreshTokens'

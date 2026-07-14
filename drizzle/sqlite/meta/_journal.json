@@ -15,6 +15,13 @@
       "when": 1783999246905,
       "tag": "0001_fixed_ink",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1784000545891,
+      "tag": "0002_demonic_arclight",
+      "breakpoints": true
     }
   ]
 }

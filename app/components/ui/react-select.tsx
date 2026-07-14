@@ -2,7 +2,7 @@ import { useState, useEffect } from "react"
 import ReactSelectBase, { type Props as ReactSelectProps } from "react-select"
 import { cn } from "~/lib/utils"
 
-function ReactSelect(props: ReactSelectProps) {
+function ReactSelect<Option = any>(props: ReactSelectProps<Option>) {
   const [mounted, setMounted] = useState(false)
 
   useEffect(() => {

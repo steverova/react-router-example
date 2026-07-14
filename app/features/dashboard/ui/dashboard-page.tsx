@@ -1,4 +1,5 @@
 
+import { lazy, Suspense } from 'react'
 import { CircleCheckIcon, LoaderIcon } from 'lucide-react'
 
 import { Badge } from '~/components/ui/badge'
@@ -8,7 +9,8 @@ import type { ColumnDef } from '@tanstack/react-table'
 import { ChartAreaInteractive } from './chart-area-interactive'
 import { DataTable } from '~/components/shared/data-table'
 import { SectionCards } from './sections-cards'
-import { MapWithMarkers } from './map'
+
+const MapWithMarkers = lazy(() => import('./mark-map').then(m => ({ default: m.MapWithMarkers })))
 
 export function loader() {
   return {}
@@ -75,8 +77,10 @@ export default function DashboardPage() {
 				<div className='flex flex-col gap-4 py-4 md:gap-6 md:py-6'>
 					<SectionCards />
 					<div className='px-4 lg:px-6'>
-						<ChartAreaInteractive />
+					<ChartAreaInteractive />
+					<Suspense fallback={<div className="h-96 rounded-md bg-muted animate-pulse" />}>
 						<MapWithMarkers/>
+					</Suspense>
 					</div>
 					<DataTable
 						title='Sections'

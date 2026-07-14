@@ -26,6 +26,11 @@ export default [
   route("projects/actions/edit", "./features/projects/actions/edit-project.action.ts"),
   route("projects/actions/delete", "./features/projects/actions/delete-project.action.ts"),
 
+  // activities de actividades (solo POST, sin UI)
+  route("activities/actions/create", "./features/activities/actions/create-activity.action.ts"),
+  route("activities/actions/edit", "./features/activities/actions/edit-activity.action.ts"),
+  route("activities/actions/delete", "./features/activities/actions/delete-activity.action.ts"),
+
   layout("./components/blocks/layout/index.tsx", [
     index("routes/home.tsx"),
     route("table-example", "./features/table-example.tsx"),
