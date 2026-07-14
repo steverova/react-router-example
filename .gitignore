@@ -9,3 +9,5 @@ local.db
 ./local.db
 # typescript
 *.tsbuildinfo
+.env
+env
