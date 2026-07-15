@@ -56,7 +56,7 @@ export default function Layout() {
 						<WindowControls />
 					</div>
 				</header>
-				<div className='flex flex-1 flex-col overflow-scroll'>
+				<div className='flex flex-1 flex-col overflow-auto min-h-screen'>
 					<Outlet />
 				</div>
 			</SidebarInset>

@@ -1,10 +1,18 @@
 import { reactRouter } from "@react-router/dev/vite"
 import tailwindcss from "@tailwindcss/vite"
+import path from "node:path"
 import { defineConfig } from "vite"
+
+const srcTauriPath = path.resolve(__dirname, "src-tauri")
 
 export default defineConfig({
   resolve: { tsconfigPaths: true },
   plugins: [tailwindcss(), reactRouter()],
+  server: {
+    watch: {
+      ignored: (filePath: string) => filePath.startsWith(srcTauriPath),
+    },
+  },
   build: {
     rollupOptions: {
       output: {
