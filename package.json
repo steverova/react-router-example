@@ -18,7 +18,11 @@
     "db:push:sqlite": "drizzle-kit push --config=drizzle.config.sqlite.ts",
     "db:migrate:sqlite": "drizzle-kit migrate --config=drizzle.config.sqlite.ts",
     "db:drop:sqlite": "drizzle-kit drop --config=drizzle.config.sqlite.ts",
-    "db:seed": "npx tsx app/db/seed.ts"
+    "db:seed": "npx tsx app/db/seed.ts",
+    "db:studio:turso": "drizzle-kit studio --config=drizzle.config.turso.ts",
+    "db:generate:turso": "drizzle-kit generate --config=drizzle.config.turso.ts",
+    "db:push:turso": "drizzle-kit push --config=drizzle.config.turso.ts",
+    "db:migrate:turso": "drizzle-kit migrate --config=drizzle.config.turso.ts"
   },
   "dependencies": {
     "@base-ui/react": "^1.6.0",
@@ -28,6 +32,7 @@
     "@dnd-kit/utilities": "^3.2.2",
     "@fontsource-variable/geist": "^5.2.9",
     "@hookform/resolvers": "^5.4.0",
+    "@libsql/client": "^0.17.4",
     "@react-router/node": "7.15.1",
     "@react-router/serve": "7.15.1",
     "@tanstack/react-table": "^8.21.3",
@@ -73,6 +78,7 @@
     "@types/nodemailer": "^8.0.1",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "dotenv": "^17.4.2",
     "drizzle-kit": "^0.31.10",
     "prettier": "^3.8.3",
     "prettier-plugin-tailwindcss": "^0.8.0",

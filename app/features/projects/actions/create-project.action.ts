@@ -8,7 +8,7 @@ export async function action({ request }: { request: Request }) {
   const formData = await request.formData()
 
   const data = {
-    projectCode: generateProjectCode(),
+    projectCode: await generateProjectCode(),
     clientEntityId: Number(formData.get("clientEntityId")),
     name: formData.get("name") as string,
     description: (formData.get("description") as string) || undefined,
@@ -28,6 +28,6 @@ export async function action({ request }: { request: Request }) {
     return { errors: result.error.flatten().fieldErrors }
   }
 
-  registerProject(result.data)
+  await registerProject(result.data)
   return { success: true }
 }

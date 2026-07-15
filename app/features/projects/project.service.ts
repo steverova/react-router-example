@@ -7,19 +7,19 @@ import {
   deleteProjectInDb,
 } from "./project.repository"
 
-export function listProjects() {
+export async function listProjects() {
   return getAllProjects()
 }
 
-export function findProject(id: number) {
+export async function findProject(id: number) {
   return getProjectById(id)
 }
 
-export function listProjectsByClient(clientEntityId: number) {
+export async function listProjectsByClient(clientEntityId: number) {
   return getProjectsByClient(clientEntityId)
 }
 
-export function registerProject(data: {
+export async function registerProject(data: {
   projectCode: string
   clientEntityId: number
   name: string
@@ -37,7 +37,7 @@ export function registerProject(data: {
   return createProjectInDb(data)
 }
 
-export function updateProject(
+export async function updateProject(
   id: number,
   data: {
     clientEntityId?: number
@@ -57,6 +57,6 @@ export function updateProject(
   return updateProjectInDb(id, data)
 }
 
-export function removeProject(id: number) {
+export async function removeProject(id: number) {
   return deleteProjectInDb(id)
 }

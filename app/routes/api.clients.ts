@@ -1,6 +1,6 @@
 import { listClients } from "~/features/clients"
 
 export async function loader() {
-  const clients = listClients()
+  const clients = await listClients()
   return Response.json(clients)
 }

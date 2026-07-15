@@ -1,18 +1,16 @@
 import { db } from "~/db"
 import { users, credentials } from "~/db/schema/sqlite"
 import { eq, and } from "drizzle-orm"
-import type { BetterSQLite3Database } from "drizzle-orm/better-sqlite3"
 
-const sqlite = db as unknown as BetterSQLite3Database<Record<string, never>>
-
-export function getUserByEmail(email: string) {
-  return sqlite.select().from(users).where(eq(users.email, email)).get()
+export async function getUserByEmail(email: string) {
+  const result = await db.select().from(users).where(eq(users.email, email))
+  return result[0] ?? null
 }
 
-export function getCredentialByUserId(userId: number) {
-  return sqlite
+export async function getCredentialByUserId(userId: number) {
+  const result = await db
     .select()
     .from(credentials)
     .where(and(eq(credentials.userId, userId), eq(credentials.provider, "password")))
-    .get()
+  return result[0] ?? null
 }

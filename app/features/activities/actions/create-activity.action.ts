@@ -23,6 +23,6 @@ export async function action({ request }: { request: Request }) {
     return { errors: result.error.flatten().fieldErrors }
   }
 
-  registerActivity(result.data)
+  await registerActivity(result.data)
   return { success: true }
 }

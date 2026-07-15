@@ -7,19 +7,19 @@ import {
   deleteActivityInDb,
 } from "./activity.repository"
 
-export function listActivities() {
+export async function listActivities() {
   return getAllActivities()
 }
 
-export function findActivity(id: number) {
+export async function findActivity(id: number) {
   return getActivityById(id)
 }
 
-export function listActivitiesByProject(projectId: number) {
+export async function listActivitiesByProject(projectId: number) {
   return getActivitiesByProject(projectId)
 }
 
-export function registerActivity(data: {
+export async function registerActivity(data: {
   projectId: number
   parentActivityId?: number | null
   title: string
@@ -34,7 +34,7 @@ export function registerActivity(data: {
   return createActivityInDb(data)
 }
 
-export function updateActivity(
+export async function updateActivity(
   id: number,
   data: {
     projectId?: number
@@ -51,6 +51,6 @@ export function updateActivity(
   return updateActivityInDb(id, data)
 }
 
-export function removeActivity(id: number) {
+export async function removeActivity(id: number) {
   return deleteActivityInDb(id)
 }

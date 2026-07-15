@@ -1,21 +1,21 @@
 import { getAllUsers, getUserById, createUser, deleteUser, updateUser as updateUserInDb } from "./user.repository"
 
-export function listUsers() {
+export async function listUsers() {
   return getAllUsers()
 }
 
-export function findUser(id: number) {
+export async function findUser(id: number) {
   return getUserById(id)
 }
 
-export function registerUser(name: string, email: string) {
+export async function registerUser(name: string, email: string) {
   return createUser(name, email)
 }
 
-export function removeUser(id: number) {
+export async function removeUser(id: number) {
   return deleteUser(id)
 }
 
-export function updateUser(id: number, name: string, email: string) {
+export async function updateUser(id: number, name: string, email: string) {
   return updateUserInDb(id, name, email)
 }

@@ -1,5 +1,9 @@
 import { randomBytes } from 'node:crypto'
-import Database from 'better-sqlite3'
+import dotenv from 'dotenv'
+
+dotenv.config()
+
+import { createClient } from '@libsql/client'
 import { hashPassword } from '~/lib/crypto'
 
 const SEED_USER = {
@@ -14,35 +18,30 @@ const SEED_USER = {
 
 const SEED_PASSWORD = 'password123'
 
-function seed() {
+async function seed() {
 	console.log(' Seeding database...')
 
-	const db = new Database(process.env.SQLITE_PATH ?? './local.db')
+	const client = createClient({
+		url: process.env.TURSO_DATABASE_URL!,
+		authToken: process.env.TURSO_AUTH_TOKEN,
+	})
 
-	const existing = db
-		.prepare('SELECT id FROM users WHERE email = ?')
-		.get(SEED_USER.email)
+	const existing = await client.execute({
+		sql: 'SELECT id FROM users WHERE email = ?',
+		args: [SEED_USER.email]
+	})
 
-	if (existing) {
+	if (existing.rows.length > 0) {
 		console.log(` ⏭  User ${SEED_USER.email} already exists, skipping.`)
-		db.close()
 		return
 	}
 
-	const insertUser = db.prepare(
-		`INSERT INTO users (public_id, name, email, role, status, email_verified_at, created_at, updated_at)
-		 VALUES (?, ?, ?, ?, ?, ?, ?, ?)`
-	)
+	const publicId = randomBytes(16).toString('base64url').slice(0, 21)
 
-	const insertCredential = db.prepare(
-		`INSERT INTO credentials (user_id, provider, password_hash, created_at)
-		 VALUES (?, ?, ?, ?)`
-	)
-
-	const txn = db.transaction(() => {
-		const publicId = randomBytes(16).toString('base64url').slice(0, 21)
-
-		const result = insertUser.run(
+	await client.execute({
+		sql: `INSERT INTO users (public_id, name, email, role, status, email_verified_at, created_at, updated_at)
+		      VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+		args: [
 			publicId,
 			SEED_USER.name,
 			SEED_USER.email,
@@ -51,31 +50,29 @@ function seed() {
 			SEED_USER.emailVerifiedAt,
 			SEED_USER.createdAt,
 			SEED_USER.updatedAt
-		)
-
-		const userId = result.lastInsertRowid
-
-		insertCredential.run(
-			userId,
-			'password',
-			hashPassword(SEED_PASSWORD),
-			Date.now()
-		)
-
-		return { publicId, userId }
+		]
 	})
 
-	const { publicId, userId } = txn()
+	const user = await client.execute({
+		sql: 'SELECT id FROM users WHERE email = ?',
+		args: [SEED_USER.email]
+	})
+	const userId = user.rows[0].id
+
+	await client.execute({
+		sql: `INSERT INTO credentials (user_id, provider, password_hash, created_at)
+		      VALUES (?, ?, ?, ?)`,
+		args: [userId, 'password', hashPassword(SEED_PASSWORD), Date.now()]
+	})
 
 	console.log(
 		` ✅ Seed user created: ${SEED_USER.email} (id: ${userId}, publicId: ${publicId})`
 	)
 	console.log(` 🔑 Password: ${SEED_PASSWORD}`)
-	db.close()
 }
 
 try {
-	seed()
+	await seed()
 	process.exit(0)
 } catch (err) {
 	console.error(' ❌ Seed failed:', err)

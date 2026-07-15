@@ -1,23 +1,21 @@
 import { db } from "~/db"
 import { projects } from "~/db/schema/sqlite"
 import { eq } from "drizzle-orm"
-import type { BetterSQLite3Database } from "drizzle-orm/better-sqlite3"
 
-const sqlite = db as unknown as BetterSQLite3Database<Record<string, never>>
-
-export function getAllProjects() {
-  return sqlite.select().from(projects).all()
+export async function getAllProjects() {
+  return db.select().from(projects)
 }
 
-export function getProjectById(id: number) {
-  return sqlite.select().from(projects).where(eq(projects.id, id)).get()
+export async function getProjectById(id: number) {
+  const result = await db.select().from(projects).where(eq(projects.id, id))
+  return result[0] ?? null
 }
 
-export function getProjectsByClient(clientEntityId: number) {
-  return sqlite.select().from(projects).where(eq(projects.clientEntityId, clientEntityId)).all()
+export async function getProjectsByClient(clientEntityId: number) {
+  return db.select().from(projects).where(eq(projects.clientEntityId, clientEntityId))
 }
 
-export function createProjectInDb(data: {
+export async function createProjectInDb(data: {
   projectCode: string
   clientEntityId: number
   name: string
@@ -32,10 +30,10 @@ export function createProjectInDb(data: {
   repositoryUrl?: string
   contractReference?: string
 }) {
-  return sqlite.insert(projects).values(data).run()
+  return db.insert(projects).values(data)
 }
 
-export function updateProjectInDb(
+export async function updateProjectInDb(
   id: number,
   data: {
     clientEntityId?: number
@@ -52,9 +50,9 @@ export function updateProjectInDb(
     contractReference?: string
   }
 ) {
-  return sqlite.update(projects).set(data).where(eq(projects.id, id)).run()
+  return db.update(projects).set(data).where(eq(projects.id, id))
 }
 
-export function deleteProjectInDb(id: number) {
-  return sqlite.delete(projects).where(eq(projects.id, id)).run()
+export async function deleteProjectInDb(id: number) {
+  return db.delete(projects).where(eq(projects.id, id))
 }

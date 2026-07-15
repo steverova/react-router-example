@@ -25,6 +25,6 @@ export async function action({ request }: { request: Request }) {
     return { errors: result.error.flatten().fieldErrors }
   }
 
-  registerClient(result.data)
+  await registerClient(result.data)
   return { success: true }
 }

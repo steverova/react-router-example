@@ -14,6 +14,6 @@ export async function action({ request }: { request: Request }) {
     return { errors: result.error.flatten().fieldErrors }
   }
 
-  registerUser(result.data.name, result.data.email)
+  await registerUser(result.data.name, result.data.email)
   return { success: true }
 }

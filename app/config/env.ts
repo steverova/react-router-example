@@ -10,8 +10,10 @@ const baseSchema = z.object({
 	NODE_ENV: z
 		.enum(['development', 'production', 'test'])
 		.default('development'),
-	DB_DRIVER: z.enum(['sqlite', 'mysql']).default('sqlite'),
+	DB_DRIVER: z.enum(['sqlite', 'mysql', 'turso']).default('sqlite'),
 	SQLITE_PATH: z.string().default('./local.db'),
+	TURSO_DATABASE_URL: z.string().optional(),
+	TURSO_AUTH_TOKEN: z.string().optional(),
 	DB_HOST: z.string().optional(),
 	DB_USER: z.string().optional(),
 	DB_PASSWORD: z.string().optional(),
@@ -26,6 +28,15 @@ const envSchema = baseSchema.refine(
 	{
 		message:
 			'DB_HOST, DB_USER, DB_PASSWORD y DB_NAME son requeridos cuando DB_DRIVER=mysql',
+		path: ['DB_DRIVER']
+	}
+).refine(
+	(env) =>
+		env.DB_DRIVER !== 'turso' ||
+		(env.TURSO_DATABASE_URL && env.TURSO_AUTH_TOKEN),
+	{
+		message:
+			'TURSO_DATABASE_URL y TURSO_AUTH_TOKEN son requeridos cuando DB_DRIVER=turso',
 		path: ['DB_DRIVER']
 	}
 )

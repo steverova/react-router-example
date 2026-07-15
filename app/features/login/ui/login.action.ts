@@ -15,7 +15,7 @@ export async function loginAction({ request }: { request: Request }) {
     return { errors: result.error.flatten().fieldErrors }
   }
 
-  const auth = authenticateUser(result.data.email, result.data.password)
+  const auth = await authenticateUser(result.data.email, result.data.password)
   if (!auth.success || !auth.user) {
     session.flash("error", "Invalid email or password")
     return redirect("/login", {

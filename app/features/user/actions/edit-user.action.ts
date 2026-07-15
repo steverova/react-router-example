@@ -15,6 +15,6 @@ export async function action({ request }: { request: Request }) {
     return { errors: result.error.flatten().fieldErrors }
   }
 
-  updateUser(id, result.data.name, result.data.email)
+  await updateUser(id, result.data.name, result.data.email)
   return { success: true }
 }

@@ -6,15 +6,15 @@ import {
   deleteClientInDb,
 } from "./client.repository"
 
-export function listClients() {
+export async function listClients() {
   return getAllClients()
 }
 
-export function findClient(id: number) {
+export async function findClient(id: number) {
   return getClientById(id)
 }
 
-export function registerClient(data: {
+export async function registerClient(data: {
   entityType: string
   legalName: string
   tradeName?: string
@@ -30,7 +30,7 @@ export function registerClient(data: {
   return createClientInDb(data)
 }
 
-export function updateClient(
+export async function updateClient(
   id: number,
   data: {
     entityType: string
@@ -49,6 +49,6 @@ export function updateClient(
   return updateClientInDb(id, data)
 }
 
-export function removeClient(id: number) {
+export async function removeClient(id: number) {
   return deleteClientInDb(id)
 }

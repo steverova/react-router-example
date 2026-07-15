@@ -1,23 +1,21 @@
 import { db } from "~/db"
 import { activities } from "~/db/schema/sqlite"
 import { eq } from "drizzle-orm"
-import type { BetterSQLite3Database } from "drizzle-orm/better-sqlite3"
 
-const sqlite = db as unknown as BetterSQLite3Database<Record<string, never>>
-
-export function getAllActivities() {
-  return sqlite.select().from(activities).all()
+export async function getAllActivities() {
+  return db.select().from(activities)
 }
 
-export function getActivityById(id: number) {
-  return sqlite.select().from(activities).where(eq(activities.id, id)).get()
+export async function getActivityById(id: number) {
+  const result = await db.select().from(activities).where(eq(activities.id, id))
+  return result[0] ?? null
 }
 
-export function getActivitiesByProject(projectId: number) {
-  return sqlite.select().from(activities).where(eq(activities.projectId, projectId)).all()
+export async function getActivitiesByProject(projectId: number) {
+  return db.select().from(activities).where(eq(activities.projectId, projectId))
 }
 
-export function createActivityInDb(data: {
+export async function createActivityInDb(data: {
   projectId: number
   parentActivityId?: number | null
   title: string
@@ -29,10 +27,10 @@ export function createActivityInDb(data: {
   dueDate?: string
   createdBy?: number | null
 }) {
-  return sqlite.insert(activities).values(data).run()
+  return db.insert(activities).values(data)
 }
 
-export function updateActivityInDb(
+export async function updateActivityInDb(
   id: number,
   data: {
     projectId?: number
@@ -46,9 +44,9 @@ export function updateActivityInDb(
     dueDate?: string
   }
 ) {
-  return sqlite.update(activities).set(data).where(eq(activities.id, id)).run()
+  return db.update(activities).set(data).where(eq(activities.id, id))
 }
 
-export function deleteActivityInDb(id: number) {
-  return sqlite.delete(activities).where(eq(activities.id, id)).run()
+export async function deleteActivityInDb(id: number) {
+  return db.delete(activities).where(eq(activities.id, id))
 }

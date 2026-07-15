@@ -6,6 +6,6 @@ export async function action({ request }: { request: Request }) {
   const formData = await request.formData()
 
   const id = Number(formData.get("id"))
-  removeActivity(id)
+  await removeActivity(id)
   return { success: true }
 }

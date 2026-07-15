@@ -14,7 +14,7 @@ import { useAuthStore } from '~/stores/auth-store'
 
 export async function loader({ request }: { request: Request }) {
   const userId = await requireAuth(request)
-  const user = getUserById(Number(userId))
+  const user = await getUserById(Number(userId))
   const rotated = await rotateSession(request)
   if (rotated) {
     return data({ user }, { headers: rotated.headers })

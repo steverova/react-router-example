@@ -1,19 +1,17 @@
 import { db } from "~/db"
 import { clients } from "~/db/schema/sqlite"
 import { eq } from "drizzle-orm"
-import type { BetterSQLite3Database } from "drizzle-orm/better-sqlite3"
 
-const sqlite = db as unknown as BetterSQLite3Database<Record<string, never>>
-
-export function getAllClients() {
-  return sqlite.select().from(clients).all()
+export async function getAllClients() {
+  return db.select().from(clients)
 }
 
-export function getClientById(id: number) {
-  return sqlite.select().from(clients).where(eq(clients.id, id)).get()
+export async function getClientById(id: number) {
+  const result = await db.select().from(clients).where(eq(clients.id, id))
+  return result[0] ?? null
 }
 
-export function createClientInDb(data: {
+export async function createClientInDb(data: {
   entityType: string
   legalName: string
   tradeName?: string
@@ -26,10 +24,10 @@ export function createClientInDb(data: {
   notes?: string
   status?: string
 }) {
-  return sqlite.insert(clients).values(data).run()
+  return db.insert(clients).values(data)
 }
 
-export function updateClientInDb(
+export async function updateClientInDb(
   id: number,
   data: {
     entityType: string
@@ -45,9 +43,9 @@ export function updateClientInDb(
     status?: string
   }
 ) {
-  return sqlite.update(clients).set(data).where(eq(clients.id, id)).run()
+  return db.update(clients).set(data).where(eq(clients.id, id))
 }
 
-export function deleteClientInDb(id: number) {
-  return sqlite.delete(clients).where(eq(clients.id, id)).run()
+export async function deleteClientInDb(id: number) {
+  return db.delete(clients).where(eq(clients.id, id))
 }

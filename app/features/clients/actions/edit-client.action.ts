@@ -26,6 +26,6 @@ export async function action({ request }: { request: Request }) {
     return { errors: result.error.flatten().fieldErrors }
   }
 
-  updateClient(id, result.data)
+  await updateClient(id, result.data)
   return { success: true }
 }
