@@ -39,6 +39,7 @@
     "@react-router/node": "7.15.1",
     "@react-router/serve": "7.15.1",
     "@tanstack/react-table": "^8.21.3",
+    "@tauri-apps/api": "^2.11.1",
     "better-sqlite3": "^12.11.1",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",

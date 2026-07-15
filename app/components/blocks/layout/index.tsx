@@ -10,6 +10,7 @@ import { AppSidebar } from './app-sidebar'
 import { requireAuth, rotateSession } from '~/session.server'
 import { getUserById } from '~/features/user/user.repository'
 import { useAuthStore } from '~/stores/auth-store'
+import WindowControls from '~/components/shared/window-controls'
 
 
 export async function loader({ request }: { request: Request }) {
@@ -39,14 +40,19 @@ export default function Layout() {
 		<SidebarProvider className='h-screen'>
 			<AppSidebar />
 			<SidebarInset className='flex flex-col overflow-hidden'>
-				<header className='flex h-12 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-10 sticky top-0 z-50 bg-background border-b'>
-					<div className='flex items-center gap-2 px-3'>
+				<header
+					data-tauri-drag-region
+					className='flex h-10 shrink-0 items-center transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-10 sticky top-0 z-50 bg-background border-b'
+				>
+					<div className='flex items-center gap-2 px-3' data-tauri-drag-region>
             <SidebarTrigger className='-ml-1' />
 						<Separator
 							orientation='vertical'
-							className='mr-2 data-[orientation=vertical]:h-8'
+							className='mr-2 data-[orientation=vertical]:h-6'
 						/>
 					</div>
+					<div className='flex-1' data-tauri-drag-region />
+					<WindowControls />
 				</header>
 				<div className='flex flex-1 flex-col overflow-scroll'>
 					<Outlet />

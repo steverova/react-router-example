@@ -1,0 +1,54 @@
+import { useEffect, useState } from "react"
+import { Minus, Square, X, Maximize2 } from "lucide-react"
+
+export default function WindowControls() {
+  const [isMaximized, setIsMaximized] = useState(false)
+  const [ready, setReady] = useState(false)
+  const [win, setWin] = useState<any>(null)
+
+  useEffect(() => {
+    import("@tauri-apps/api/window").then(({ getCurrentWindow }) => {
+      const w = getCurrentWindow()
+      setWin(w)
+      w.isMaximized().then(setIsMaximized)
+      setReady(true)
+
+      w.onResized(async () => {
+        const maximized = await w.isMaximized()
+        setIsMaximized(maximized)
+      })
+    })
+  }, [])
+
+  if (!ready) return null
+
+  return (
+    <div className="flex items-center gap-0 ml-auto shrink-0">
+      <button
+        data-tauri-drag-region="false"
+        onClick={() => win.minimize()}
+        className="flex items-center justify-center w-11 h-11 hover:bg-muted transition-colors"
+      >
+        <Minus className="size-4" />
+      </button>
+      <button
+        data-tauri-drag-region="false"
+        onClick={() => isMaximized ? win.unmaximize() : win.maximize()}
+        className="flex items-center justify-center w-11 h-11 hover:bg-muted transition-colors"
+      >
+        {isMaximized ? (
+          <Square className="size-3.5" />
+        ) : (
+          <Maximize2 className="size-3.5" />
+        )}
+      </button>
+      <button
+        data-tauri-drag-region="false"
+        onClick={() => win.close()}
+        className="flex items-center justify-center w-11 h-11 hover:bg-destructive hover:text-destructive-foreground transition-colors"
+      >
+        <X className="size-4" />
+      </button>
+    </div>
+  )
+}

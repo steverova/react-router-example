@@ -41,6 +41,9 @@ importers:
       '@tanstack/react-table':
         specifier: ^8.21.3
         version: 8.21.3(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
+      '@tauri-apps/api':
+        specifier: ^2.11.1
+        version: 2.11.1
       better-sqlite3:
         specifier: ^12.11.1
         version: 12.11.1
@@ -1997,6 +2000,9 @@ packages:
   '@tanstack/table-core@8.21.3':
     resolution: {integrity: sha512-ldZXEhOBb8Is7xLs01fR3YEc3DERiz5silj8tnGkFZytt1abEvl/GhUmCE0PMLaMPTa3Jk4HbKmRlHmu+gCftg==}
     engines: {node: '>=12'}
+
+  '@tauri-apps/api@2.11.1':
+    resolution: {integrity: sha512-M2FPuYND2m+wh5hfW9ZpSdxMPdEJovPBWwoHJmwUpysTYNHaOkVFN419m/K0LIgjb/7KU2vBgsUepJWugQCvAA==}
 
   '@ts-morph/common@0.27.0':
     resolution: {integrity: sha512-Wf29UqxWDpc+i61k3oIOzcUfQt79PIT9y/MWfAGlrkjg6lBC1hwDECLXPVJAhWjiGbfBCxZd65F/LIZF3+jeJQ==}
@@ -5984,6 +5990,8 @@ snapshots:
       react-dom: 19.2.6(react@19.2.6)
 
   '@tanstack/table-core@8.21.3': {}
+
+  '@tauri-apps/api@2.11.1': {}
 
   '@ts-morph/common@0.27.0':
     dependencies:
