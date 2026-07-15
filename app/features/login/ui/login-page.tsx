@@ -14,7 +14,7 @@ export default function LoginPage() {
   const fetcher = useFetcher()
 
   return (
-    <div className="flex min-h-svh w-full items-center justify-center p-6 md:p-10">
+    <div className="flex flex-1 w-full items-center justify-center p-6 md:p-10">
       <div className="w-full max-w-sm">
         {error && (
           <div className="mb-4 p-3 text-sm text-red-500 bg-red-50 rounded-md">

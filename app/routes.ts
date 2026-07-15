@@ -4,8 +4,11 @@ export default [
   // silencia la petición automática de Chrome DevTools
   route(".well-known/appspecific/com.chrome.devtools.json", "./routes/devtools.ts"),
 
-  route("about", "./pages/about/index.tsx"),
-  route("login", "./features/login/ui/login-page.tsx"),
+  layout("./layouts/public-layout.tsx", [
+    route("about", "./pages/about/index.tsx"),
+    route("login", "./features/login/ui/login-page.tsx"),
+    route("*", "./components/blocks/not-found.tsx")
+  ]),
   route("logout", "./routes/logout.tsx"),
 
   // API endpoints
@@ -51,5 +54,5 @@ export default [
     route("dashboard", "./features/dashboard/ui/dashboard-page.tsx", {}),
   ]),
 
-  route("*", "./components/blocks/not-found.tsx")
+  
 ] satisfies RouteConfig
