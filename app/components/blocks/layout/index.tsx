@@ -48,7 +48,7 @@ export default function Layout() {
 						/>
 					</div>
 				</header>
-				<div className='flex flex-1 flex-col overflow-hidden'>
+				<div className='flex flex-1 flex-col overflow-scroll'>
 					<Outlet />
 				</div>
 			</SidebarInset>

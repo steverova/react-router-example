@@ -2,7 +2,11 @@ import { env } from '~/config/env';
 
 type BetterSqlite3Constructor = typeof import('better-sqlite3');
 
+let dbInstance: any = null;
+
 export async function createDb() {
+  if (dbInstance) return dbInstance;
+
   if (env.DB_DRIVER === 'turso') {
     const { createClient } = await import('@libsql/client');
     const { drizzle } = await import('drizzle-orm/libsql');
@@ -11,9 +15,12 @@ export async function createDb() {
     const client = createClient({
       url: env.TURSO_DATABASE_URL!,
       authToken: env.TURSO_AUTH_TOKEN,
+      syncUrl: env.TURSO_DATABASE_URL,
+      syncInterval: 60,
     });
 
-    return drizzle(client, { schema });
+    dbInstance = drizzle(client, { schema });
+    return dbInstance;
   }
 
   if (env.DB_DRIVER === 'sqlite') {
@@ -22,7 +29,8 @@ export async function createDb() {
     const schema = await import('./schema/sqlite');
 
     const sqlite = new Database(env.SQLITE_PATH);
-    return drizzle(sqlite, { schema });
+    dbInstance = drizzle(sqlite, { schema });
+    return dbInstance;
   }
 
   const { drizzle } = await import('drizzle-orm/mysql2');
@@ -37,5 +45,6 @@ export async function createDb() {
     connectionLimit: 5,
   });
 
-  return drizzle(pool, { schema, mode: 'default' });
+  dbInstance = drizzle(pool, { schema, mode: 'default' });
+  return dbInstance;
 }

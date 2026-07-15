@@ -86,7 +86,14 @@ export function ThemeProvider({
 }: ThemeProviderProps) {
   // Always start with defaultTheme to match SSR — localStorage is read
   // in useEffect (client-only) to avoid hydration mismatch.
-  const [theme, setThemeState] = React.useState<Theme>(defaultTheme)
+  const [theme, setThemeState] = React.useState<Theme>(() => {
+    if (typeof window !== "undefined") {
+      const stored = localStorage.getItem(storageKey)
+      if (isTheme(stored)) return stored
+      return window.matchMedia(COLOR_SCHEME_QUERY).matches ? "dark" : "light"
+    }
+    return defaultTheme
+  })
 
   // Sync from localStorage after first render (client-only)
   React.useEffect(() => {

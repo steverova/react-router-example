@@ -6,11 +6,11 @@ import { Badge } from '~/components/ui/badge'
 
 import data from './data.json'
 import type { ColumnDef } from '@tanstack/react-table'
-import { ChartAreaInteractive } from './chart-area-interactive'
-import { DataTable } from '~/components/shared/data-table'
-import { SectionCards } from './sections-cards'
 
+const ChartAreaInteractive = lazy(() => import('./chart-area-interactive').then(m => ({ default: m.ChartAreaInteractive })))
 const MapWithMarkers = lazy(() => import('./mark-map').then(m => ({ default: m.MapWithMarkers })))
+const DataTable = lazy(() => import('~/components/shared/data-table').then(m => ({ default: m.DataTable })))
+const SectionCards = lazy(() => import('./sections-cards').then(m => ({ default: m.SectionCards })))
 
 export function loader() {
   return {}
@@ -75,20 +75,26 @@ export default function DashboardPage() {
 		<div className='flex flex-1 flex-col overflow-auto'>
 			<div className='@container/main flex flex-1 flex-col gap-2'>
 				<div className='flex flex-col gap-4 py-4 md:gap-6 md:py-6'>
-					<SectionCards />
+					<Suspense fallback={<div className="h-32 rounded-md bg-muted animate-pulse" />}>
+						<SectionCards />
+					</Suspense>
 					<div className='grid grid-cols-1 gap-4 px-4 lg:grid-cols-2 lg:px-6'>
-					<ChartAreaInteractive />
+					<Suspense fallback={<div className="h-96 rounded-md bg-muted animate-pulse" />}>
+						<ChartAreaInteractive />
+					</Suspense>
 					<Suspense fallback={<div className="h-96 rounded-md bg-muted animate-pulse" />}>
 						<MapWithMarkers/>
 					</Suspense>
 				</div>
-					<DataTable
-						title='Sections'
-						data={data}
-						columns={columns}
-						onAdd={() => console.log('Add clicked')}
-						onRefetch={() => console.log('Refetch clicked')}
-					/>
+					<Suspense fallback={<div className="h-64 rounded-md bg-muted animate-pulse" />}>
+						<DataTable
+							title='Sections'
+							data={data}
+							columns={columns}
+							onAdd={() => console.log('Add clicked')}
+							onRefetch={() => console.log('Refetch clicked')}
+						/>
+					</Suspense>
 				</div>
 			</div>
 		</div>

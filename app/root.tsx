@@ -23,7 +23,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Links />
       </head>
       <body>
-        <ThemeProvider>
+        <ThemeProvider defaultTheme="dark">
           <AlertDialogProvider>
             <Toaster />
             {children}

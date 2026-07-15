@@ -22,7 +22,10 @@
     "db:studio:turso": "drizzle-kit studio --config=drizzle.config.turso.ts",
     "db:generate:turso": "drizzle-kit generate --config=drizzle.config.turso.ts",
     "db:push:turso": "drizzle-kit push --config=drizzle.config.turso.ts",
-    "db:migrate:turso": "drizzle-kit migrate --config=drizzle.config.turso.ts"
+    "db:migrate:turso": "drizzle-kit migrate --config=drizzle.config.turso.ts",
+    "tauri": "tauri",
+    "app": "tauri dev",
+    "app:build": "tauri build"
   },
   "dependencies": {
     "@base-ui/react": "^1.6.0",

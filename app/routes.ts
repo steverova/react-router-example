@@ -31,6 +31,8 @@ export default [
   route("activities/actions/edit", "./features/activities/actions/edit-activity.action.ts"),
   route("activities/actions/delete", "./features/activities/actions/delete-activity.action.ts"),
 
+  
+
   layout("./components/blocks/layout/index.tsx", [
     index("routes/home.tsx"),
     route("table-example", "./features/table-example.tsx"),
@@ -48,4 +50,6 @@ export default [
     route("activities/:id/edit-record", "./features/activities/ui/activity-form.tsx", { id: "activities-edit" }),
     route("dashboard", "./features/dashboard/ui/dashboard-page.tsx", {}),
   ]),
+
+  route("*", "./components/blocks/not-found.tsx")
 ] satisfies RouteConfig

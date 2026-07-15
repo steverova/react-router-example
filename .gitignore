@@ -15,3 +15,6 @@ build
 
 # TypeScript
 *.tsbuildinfo
+
+# Tauri
+src-tauri/target
