@@ -42,17 +42,19 @@ export default function Layout() {
 			<SidebarInset className='flex flex-col overflow-hidden'>
 				<header
 					data-tauri-drag-region
-					className='flex h-10 shrink-0 items-center transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-10 sticky top-0 z-50 bg-background border-b'
+					className='flex h-10 shrink-0 items-center transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-10 sticky top-0 z-50 bg-background border-b relative'
 				>
-					<div className='flex items-center gap-2 px-3' data-tauri-drag-region>
+					<div className='flex items-center gap-2 px-3'>
             <SidebarTrigger className='-ml-1' />
 						<Separator
 							orientation='vertical'
 							className='mr-2 data-[orientation=vertical]:h-6'
 						/>
 					</div>
-					<div className='flex-1' data-tauri-drag-region />
-					<WindowControls />
+					<div className='flex-1' />
+					<div className='flex items-center'>
+						<WindowControls />
+					</div>
 				</header>
 				<div className='flex flex-1 flex-col overflow-scroll'>
 					<Outlet />

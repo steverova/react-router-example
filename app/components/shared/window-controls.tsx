@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { Minus, Square, X, Maximize2 } from "lucide-react"
+import { Minus, Square, X, Maximize2, RotateCw } from "lucide-react"
 
 export default function WindowControls() {
   const [isMaximized, setIsMaximized] = useState(false)
@@ -26,8 +26,17 @@ export default function WindowControls() {
     <div className="flex items-center gap-0 ml-auto shrink-0">
       <button
         data-tauri-drag-region="false"
+        onClick={() => window.location.reload()}
+        className="flex items-center justify-center w-11 h-11 hover:bg-muted transition-colors"
+        title="Recargar"
+      >
+        <RotateCw className="size-4" />
+      </button>
+      <button
+        data-tauri-drag-region="false"
         onClick={() => win.minimize()}
         className="flex items-center justify-center w-11 h-11 hover:bg-muted transition-colors"
+        title="Minimizar"
       >
         <Minus className="size-4" />
       </button>
@@ -35,6 +44,7 @@ export default function WindowControls() {
         data-tauri-drag-region="false"
         onClick={() => isMaximized ? win.unmaximize() : win.maximize()}
         className="flex items-center justify-center w-11 h-11 hover:bg-muted transition-colors"
+        title={isMaximized ? "Restaurar" : "Maximizar"}
       >
         {isMaximized ? (
           <Square className="size-3.5" />
@@ -46,6 +56,7 @@ export default function WindowControls() {
         data-tauri-drag-region="false"
         onClick={() => win.close()}
         className="flex items-center justify-center w-11 h-11 hover:bg-destructive hover:text-destructive-foreground transition-colors"
+        title="Cerrar"
       >
         <X className="size-4" />
       </button>
