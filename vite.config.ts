@@ -17,7 +17,13 @@ export default defineConfig({
   },
   server: {
     watch: {
-      ignored: (filePath: string) => filePath.startsWith(srcTauriPath),
+      ignored: [
+        '**/node_modules/**',
+        '**/.wrangler/**',
+        '**/build/**',
+        '**/src-tauri/**',
+        '**/*.sqlite*',
+      ],
     },
   },
   build: {

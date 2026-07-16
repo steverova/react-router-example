@@ -1451,16 +1451,11 @@ function useLeaflet() {
 
     useEffect(() => {
         async function loadLeaflet() {
-            const leaflet = await import("leaflet")
-            const leafletFullscreen = await import("leaflet.fullscreen")
+            const { initLeaflet } = await import("./leaflet-init")
+            const L_object = await initLeaflet()
+            if (!L_object) return
+
             const leafletDraw = await import("leaflet-draw")
-
-            const L_object = leaflet.default
-            if (L_object.Control && !L_object.Control.FullScreen) {
-                L_object.Control.FullScreen =
-                    leafletFullscreen.default || leafletFullscreen
-            }
-
             setLeafletDraw(leafletDraw)
             setL(L_object)
         }

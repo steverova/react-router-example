@@ -1,5 +1,4 @@
-import { createCookieSessionStorage, redirect, data } from "react-router";
-import { env } from "cloudflare:workers";
+import { createCookieSessionStorage, redirect } from "react-router";
 
 type SessionData = {
   userId: string;
@@ -10,21 +9,38 @@ type SessionFlashData = {
   error: string;
 };
 
-const SESSION_MAX_AGE = 60 * 60 * 24; // 24 horas
-const ROTATION_INTERVAL = 60 * 15; // 15 minutos
+const SESSION_MAX_AGE = 60 * 60 * 24;
+const ROTATION_INTERVAL = 60 * 15;
 
-const { getSession, commitSession, destroySession } =
-  createCookieSessionStorage<SessionData, SessionFlashData>({
+let sessionStorage: ReturnType<typeof createCookieSessionStorage<SessionData, SessionFlashData>> | null = null;
+
+function getSessionStorage() {
+  if (sessionStorage) return sessionStorage;
+  sessionStorage = createCookieSessionStorage<SessionData, SessionFlashData>({
     cookie: {
       name: "__session",
       httpOnly: true,
       maxAge: SESSION_MAX_AGE,
       path: "/",
       sameSite: "lax",
-      secrets: [env.SESSION_SECRET ?? "s3cret1"],
+      secrets: ["k8$mN2pQr5tY7wZ3xV6bC9dF0gH1jL4"],
       secure: false,
     },
   });
+  return sessionStorage;
+}
+
+async function getSession(cookieHeader: string | null) {
+  return getSessionStorage().getSession(cookieHeader);
+}
+
+async function commitSession(session: any) {
+  return getSessionStorage().commitSession(session);
+}
+
+async function destroySession(session: any) {
+  return getSessionStorage().destroySession(session);
+}
 
 async function requireAuth(request: Request) {
   const session = await getSession(request.headers.get("Cookie"));

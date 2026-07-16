@@ -1,7 +1,16 @@
 import { Map, MapMarker, MapTileLayer } from "~/components/ui/map"
 import type { LatLngExpression } from "leaflet"
+import { useState, useEffect } from "react"
 
 export function MapWithMarkers() {
+    const [isMounted, setIsMounted] = useState(false)
+
+    useEffect(() => {
+        setIsMounted(true)
+    }, [])
+
+    if (!isMounted) return null
+
     const CITIES = [
         {
             name: "Toronto",

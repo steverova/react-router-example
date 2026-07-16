@@ -8,7 +8,6 @@ import data from './data.json'
 import type { ColumnDef } from '@tanstack/react-table'
 
 const ChartAreaInteractive = lazy(() => import('./chart-area-interactive').then(m => ({ default: m.ChartAreaInteractive })))
-const MapWithMarkers = lazy(() => import('./mark-map').then(m => ({ default: m.MapWithMarkers })))
 const DataTable = lazy(() => import('~/components/shared/data-table').then(m => ({ default: m.DataTable })))
 const SectionCards = lazy(() => import('./sections-cards').then(m => ({ default: m.SectionCards })))
 
@@ -82,9 +81,9 @@ export default function DashboardPage() {
 					<Suspense fallback={<div className="h-96 rounded-md bg-muted animate-pulse" />}>
 						<ChartAreaInteractive />
 					</Suspense>
-					<Suspense fallback={<div className="h-96 rounded-md bg-muted animate-pulse" />}>
+					{/*<Suspense fallback={<div className="h-96 rounded-md bg-muted animate-pulse" />}>
 						<MapWithMarkers/>
-					</Suspense>
+					</Suspense>*/}
 				</div>
 					<Suspense fallback={<div className="h-64 rounded-md bg-muted animate-pulse" />}>
 						<DataTable

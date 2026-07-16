@@ -12,7 +12,7 @@ async function deriveKey(password: string, salt: Uint8Array): Promise<Uint8Array
   const bits = await crypto.subtle.deriveBits(
     {
       name: 'PBKDF2',
-      salt,
+      salt: salt as unknown as ArrayBuffer,
       iterations: 100000,
       hash: 'SHA-256',
     },
