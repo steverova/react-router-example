@@ -7,6 +7,8 @@ export default function WindowControls() {
   const [win, setWin] = useState<any>(null)
 
   useEffect(() => {
+    if (!window.__TAURI_INTERNALS__) return
+
     import("@tauri-apps/api/window").then(({ getCurrentWindow }) => {
       const w = getCurrentWindow()
       setWin(w)

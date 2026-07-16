@@ -15,8 +15,6 @@ export async function createDb() {
     const client = createClient({
       url: env.TURSO_DATABASE_URL!,
       authToken: env.TURSO_AUTH_TOKEN,
-      syncUrl: env.TURSO_DATABASE_URL,
-      syncInterval: 60,
     });
 
     dbInstance = drizzle(client, { schema });
