@@ -26,7 +26,7 @@ type Schema = {
 	reviewer: string
 }
 
-const columns: ColumnDef<Schema>[] = [
+const columns: ColumnDef<Schema, any>[] = [
 	{
 		accessorKey: 'header',
 		header: 'Header'
@@ -90,7 +90,7 @@ export default function DashboardPage() {
 						<DataTable
 							title='Sections'
 							data={data}
-							columns={columns}
+							columns={columns as any}
 							onAdd={() => console.log('Add clicked')}
 							onRefetch={() => console.log('Refetch clicked')}
 						/>

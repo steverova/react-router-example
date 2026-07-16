@@ -1,4 +1,5 @@
 import { createCookieSessionStorage, redirect, data } from "react-router";
+import { env } from "cloudflare:workers";
 
 type SessionData = {
   userId: string;
@@ -20,8 +21,8 @@ const { getSession, commitSession, destroySession } =
       maxAge: SESSION_MAX_AGE,
       path: "/",
       sameSite: "lax",
-      secrets: [process.env.SESSION_SECRET ?? "s3cret1"],
-      secure: process.env.NODE_ENV === "production",
+      secrets: [env.SESSION_SECRET ?? "s3cret1"],
+      secure: false,
     },
   });
 

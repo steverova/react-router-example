@@ -1,28 +1,28 @@
-import { db } from "~/db"
+import type { AppDb } from "~/db"
 import { projects } from "~/db/schema/sqlite"
 import { eq } from "drizzle-orm"
 
-export async function getAllProjects() {
+export async function getAllProjects(db: AppDb) {
   return db.select().from(projects)
 }
 
-export async function getProjectById(id: number) {
+export async function getProjectById(db: AppDb, id: number) {
   const result = await db.select().from(projects).where(eq(projects.id, id))
   return result[0] ?? null
 }
 
-export async function getProjectsByClient(clientEntityId: number) {
+export async function getProjectsByClient(db: AppDb, clientEntityId: number) {
   return db.select().from(projects).where(eq(projects.clientEntityId, clientEntityId))
 }
 
-export async function createProjectInDb(data: {
+export async function createProjectInDb(db: AppDb, data: {
   projectCode: string
   clientEntityId: number
   name: string
   description?: string
   projectManagerId?: number | null
   ownerId?: number | null
-  status?: string
+  status?: "draft" | "active" | "on_hold" | "completed" | "cancelled" | "archived"
   startDate?: string
   targetEndDate?: string
   hoursBudget?: number | null
@@ -34,6 +34,7 @@ export async function createProjectInDb(data: {
 }
 
 export async function updateProjectInDb(
+  db: AppDb,
   id: number,
   data: {
     clientEntityId?: number
@@ -41,7 +42,7 @@ export async function updateProjectInDb(
     description?: string
     projectManagerId?: number | null
     ownerId?: number | null
-    status?: string
+    status?: "draft" | "active" | "on_hold" | "completed" | "cancelled" | "archived"
     startDate?: string
     targetEndDate?: string
     hoursBudget?: number | null
@@ -53,6 +54,6 @@ export async function updateProjectInDb(
   return db.update(projects).set(data).where(eq(projects.id, id))
 }
 
-export async function deleteProjectInDb(id: number) {
+export async function deleteProjectInDb(db: AppDb, id: number) {
   return db.delete(projects).where(eq(projects.id, id))
 }

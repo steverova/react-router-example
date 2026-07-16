@@ -2,13 +2,15 @@ import { requireAuth } from "~/session.server"
 import { createProjectSchema } from "../project.schema"
 import { registerProject } from "../project.service"
 import { generateProjectCode } from "~/lib/code"
+import { getDb } from "~/db"
+import { env } from "cloudflare:workers"
 
 export async function action({ request }: { request: Request }) {
   await requireAuth(request)
+  const db = getDb(env.DB)
   const formData = await request.formData()
 
-  const data = {
-    projectCode: await generateProjectCode(),
+  const rawData = {
     clientEntityId: Number(formData.get("clientEntityId")),
     name: formData.get("name") as string,
     description: (formData.get("description") as string) || undefined,
@@ -23,11 +25,12 @@ export async function action({ request }: { request: Request }) {
     contractReference: (formData.get("contractReference") as string) || undefined,
   }
 
-  const result = createProjectSchema.safeParse(data)
+  const result = createProjectSchema.safeParse(rawData)
   if (!result.success) {
     return { errors: result.error.flatten().fieldErrors }
   }
 
-  await registerProject(result.data)
+  const projectCode = await generateProjectCode(db)
+  await registerProject(db, { ...result.data, projectCode })
   return { success: true }
 }

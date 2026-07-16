@@ -129,7 +129,7 @@ export default function ActivityFormPage() {
                       inputId="activity-project"
                       options={projectOptions}
                       value={projectOptions.find((p) => p.value === field.value) ?? null}
-                      onChange={(selected) => field.onChange(selected?.value)}
+                       onChange={(selected) => field.onChange(!Array.isArray(selected) && selected ? (selected as { value: number }).value : undefined)}
                       isDisabled={isSubmitting}
                       placeholder="Select project"
                       aria-invalid={fieldState.invalid}
@@ -168,18 +168,18 @@ export default function ActivityFormPage() {
                       inputId="activity-status"
                       options={statusOptions}
                       value={statusOptions.find((o) => o.value === field.value) ?? null}
-                      onChange={(selected) => field.onChange(selected?.value)}
+                       onChange={(selected) => field.onChange(!Array.isArray(selected) && selected ? (selected as { value: string }).value : undefined)}
                       isDisabled={isSubmitting}
                       aria-invalid={fieldState.invalid}
-                    />
-                    {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-                  </Field>
-                )}
-              />
-            </div>
+                     />
+                     {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                   </Field>
+                 )}
+               />
+             </div>
 
-            <Controller
-              name="description"
+             <Controller
+               name="description"
               control={form.control}
               render={({ field, fieldState }) => (
                 <Field data-invalid={fieldState.invalid}>
@@ -208,7 +208,7 @@ export default function ActivityFormPage() {
                       inputId="activity-priority"
                       options={priorityOptions}
                       value={priorityOptions.find((o) => o.value === field.value) ?? null}
-                      onChange={(selected) => field.onChange(selected?.value)}
+                       onChange={(selected) => field.onChange((selected as { value: any } | null)?.value)}
                       isDisabled={isSubmitting}
                       aria-invalid={fieldState.invalid}
                     />

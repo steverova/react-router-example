@@ -1,3 +1,4 @@
+import type { AppDb } from "~/db"
 import {
   getAllClients,
   getClientById,
@@ -6,16 +7,16 @@ import {
   deleteClientInDb,
 } from "./client.repository"
 
-export async function listClients() {
-  return getAllClients()
+export async function listClients(db: AppDb) {
+  return getAllClients(db)
 }
 
-export async function findClient(id: number) {
-  return getClientById(id)
+export async function findClient(db: AppDb, id: number) {
+  return getClientById(db, id)
 }
 
-export async function registerClient(data: {
-  entityType: string
+export async function registerClient(db: AppDb, data: {
+  entityType: "legal_entity" | "person"
   legalName: string
   tradeName?: string
   taxId?: string
@@ -25,15 +26,16 @@ export async function registerClient(data: {
   email: string
   phone?: string
   notes?: string
-  status?: string
+  status?: "active" | "inactive"
 }) {
-  return createClientInDb(data)
+  return createClientInDb(db, data)
 }
 
 export async function updateClient(
+  db: AppDb,
   id: number,
   data: {
-    entityType: string
+    entityType: "legal_entity" | "person"
     legalName: string
     tradeName?: string
     taxId?: string
@@ -43,12 +45,12 @@ export async function updateClient(
     email: string
     phone?: string
     notes?: string
-    status?: string
+    status?: "active" | "inactive"
   }
 ) {
-  return updateClientInDb(id, data)
+  return updateClientInDb(db, id, data)
 }
 
-export async function removeClient(id: number) {
-  return deleteClientInDb(id)
+export async function removeClient(db: AppDb, id: number) {
+  return deleteClientInDb(db, id)
 }

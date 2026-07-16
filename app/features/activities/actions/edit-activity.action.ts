@@ -1,9 +1,12 @@
 import { requireAuth } from "~/session.server"
 import { createActivitySchema } from "../activity.schema"
 import { updateActivity } from "../activity.service"
+import { getDb } from "~/db"
+import { env } from "cloudflare:workers"
 
 export async function action({ request }: { request: Request }) {
   await requireAuth(request)
+  const db = getDb(env.DB)
   const formData = await request.formData()
 
   const id = Number(formData.get("id"))
@@ -24,6 +27,6 @@ export async function action({ request }: { request: Request }) {
     return { errors: result.error.flatten().fieldErrors }
   }
 
-  await updateActivity(id, result.data)
+  await updateActivity(db, id, result.data)
   return { success: true }
 }

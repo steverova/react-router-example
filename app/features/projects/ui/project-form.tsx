@@ -56,7 +56,7 @@ export default function ProjectFormPage() {
   }, [])
 
   const form = useForm<CreateProjectInput>({
-    resolver: zodResolver(createProjectSchema),
+    resolver: zodResolver(createProjectSchema) as any,
     defaultValues: {
       clientEntityId: project?.clientEntityId ?? 0,
       name: project?.name ?? "",
@@ -135,7 +135,7 @@ export default function ProjectFormPage() {
                       inputId="project-client"
                       options={clients}
                       value={clients.find((c) => c.value === field.value)}
-                      onChange={(selected) => field.onChange(selected?.value)}
+                       onChange={(selected) => field.onChange((selected as { value: any } | null)?.value)}
                       isDisabled={isSubmitting}
                       placeholder="Select client"
                       aria-invalid={fieldState.invalid}
@@ -174,7 +174,7 @@ export default function ProjectFormPage() {
                       inputId="project-status"
                       options={statusOptions}
                       value={statusOptions.find((o) => o.value === field.value)}
-                      onChange={(selected) => field.onChange(selected?.value)}
+                       onChange={(selected) => field.onChange((selected as { value: any } | null)?.value)}
                       isDisabled={isSubmitting}
                       aria-invalid={fieldState.invalid}
                     />
@@ -252,6 +252,7 @@ export default function ProjectFormPage() {
                       type="number"
                       aria-invalid={fieldState.invalid}
                       placeholder="e.g. 100"
+                      value={field.value ?? ""}
                       disabled={isSubmitting}
                     />
                     <FieldDescription>Optional hour budget</FieldDescription>

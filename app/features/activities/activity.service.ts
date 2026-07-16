@@ -1,3 +1,4 @@
+import type { AppDb } from "~/db"
 import {
   getAllActivities,
   getActivityById,
@@ -7,19 +8,19 @@ import {
   deleteActivityInDb,
 } from "./activity.repository"
 
-export async function listActivities() {
-  return getAllActivities()
+export async function listActivities(db: AppDb) {
+  return getAllActivities(db)
 }
 
-export async function findActivity(id: number) {
-  return getActivityById(id)
+export async function findActivity(db: AppDb, id: number) {
+  return getActivityById(db, id)
 }
 
-export async function listActivitiesByProject(projectId: number) {
-  return getActivitiesByProject(projectId)
+export async function listActivitiesByProject(db: AppDb, projectId: number) {
+  return getActivitiesByProject(db, projectId)
 }
 
-export async function registerActivity(data: {
+export async function registerActivity(db: AppDb, data: {
   projectId: number
   parentActivityId?: number | null
   title: string
@@ -31,10 +32,11 @@ export async function registerActivity(data: {
   dueDate?: string
   createdBy?: number | null
 }) {
-  return createActivityInDb(data)
+  return createActivityInDb(db, data)
 }
 
 export async function updateActivity(
+  db: AppDb,
   id: number,
   data: {
     projectId?: number
@@ -48,9 +50,9 @@ export async function updateActivity(
     dueDate?: string
   }
 ) {
-  return updateActivityInDb(id, data)
+  return updateActivityInDb(db, id, data)
 }
 
-export async function removeActivity(id: number) {
-  return deleteActivityInDb(id)
+export async function removeActivity(db: AppDb, id: number) {
+  return deleteActivityInDb(db, id)
 }

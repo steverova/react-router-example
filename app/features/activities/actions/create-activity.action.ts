@@ -1,9 +1,12 @@
 import { requireAuth } from "~/session.server"
 import { createActivitySchema } from "../activity.schema"
 import { registerActivity } from "../activity.service"
+import { getDb } from "~/db"
+import { env } from "cloudflare:workers"
 
 export async function action({ request }: { request: Request }) {
   await requireAuth(request)
+  const db = getDb(env.DB)
   const formData = await request.formData()
 
   const data = {
@@ -23,6 +26,6 @@ export async function action({ request }: { request: Request }) {
     return { errors: result.error.flatten().fieldErrors }
   }
 
-  await registerActivity(result.data)
+  await registerActivity(db, result.data)
   return { success: true }
 }

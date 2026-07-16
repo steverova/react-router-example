@@ -50,7 +50,7 @@ export default function ClientFormPage() {
   const clientId = params.id ? Number(params.id) : null
 
   const form = useForm<CreateClientInput>({
-    resolver: zodResolver(createClientSchema),
+    resolver: zodResolver(createClientSchema) as any,
     defaultValues: {
       entityType: (client?.entityType as "legal_entity" | "person") ?? "legal_entity",
       legalName: client?.legalName ?? "",
@@ -128,7 +128,7 @@ export default function ClientFormPage() {
                       inputId="entityType"
                       options={entityTypeOptions}
                       value={entityTypeOptions.find((o) => o.value === field.value)}
-                      onChange={(selected) => field.onChange(selected?.value)}
+                       onChange={(selected) => field.onChange((selected as { value: any } | null)?.value)}
                       isDisabled={isSubmitting}
                       aria-invalid={fieldState.invalid}
                     />
@@ -251,7 +251,7 @@ export default function ClientFormPage() {
                       inputId="client-country"
                       options={countryOptions}
                       value={countryOptions.find((o) => o.value === field.value)}
-                      onChange={(selected) => field.onChange(selected?.value)}
+                       onChange={(selected) => field.onChange((selected as { value: any } | null)?.value)}
                       isDisabled={isSubmitting}
                       placeholder="Select country"
                       aria-invalid={fieldState.invalid}

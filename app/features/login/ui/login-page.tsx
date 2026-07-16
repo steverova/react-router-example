@@ -10,8 +10,10 @@ export function meta() {
 }
 
 export default function LoginPage() {
-  const { error } = useLoaderData<typeof loader>()
-  const fetcher = useFetcher()
+  const { error: loaderError } = useLoaderData<typeof loader>()
+  const fetcher = useFetcher<typeof action>()
+
+  const error = loaderError || (fetcher.data && 'error' in fetcher.data ? fetcher.data.error : null)
 
   return (
     <div className="flex flex-1 w-full items-center justify-center p-6 md:p-10">

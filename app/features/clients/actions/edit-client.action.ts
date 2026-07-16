@@ -1,9 +1,12 @@
 import { requireAuth } from "~/session.server"
 import { createClientSchema } from "../client.schema"
 import { updateClient } from "../client.service"
+import { getDb } from "~/db"
+import { env } from "cloudflare:workers"
 
 export async function action({ request }: { request: Request }) {
   await requireAuth(request)
+  const db = getDb(env.DB)
   const formData = await request.formData()
 
   const id = Number(formData.get("id"))
@@ -26,6 +29,6 @@ export async function action({ request }: { request: Request }) {
     return { errors: result.error.flatten().fieldErrors }
   }
 
-  await updateClient(id, result.data)
+  await updateClient(db, id, result.data)
   return { success: true }
 }

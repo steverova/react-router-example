@@ -18,7 +18,7 @@ function ReactSelect<Option = any>(props: ReactSelectProps<Option>) {
         )}
       >
         {props.value && "label" in (props.value as object)
-          ? (props.value as { label: string }).label
+          ? (props.value as unknown as { label: string }).label
           : props.placeholder ?? ""}
       </div>
     )

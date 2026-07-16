@@ -11,11 +11,13 @@ import { requireAuth, rotateSession } from '~/session.server'
 import { getUserById } from '~/features/user/user.repository'
 import { useAuthStore } from '~/stores/auth-store'
 import WindowControls from '~/components/shared/window-controls'
-
+import { getDb } from '~/db'
+import { env } from 'cloudflare:workers'
 
 export async function loader({ request }: { request: Request }) {
+  const db = getDb(env.DB)
   const userId = await requireAuth(request)
-  const user = await getUserById(Number(userId))
+  const user = await getUserById(db, Number(userId))
   const rotated = await rotateSession(request)
   if (rotated) {
     return data({ user }, { headers: rotated.headers })

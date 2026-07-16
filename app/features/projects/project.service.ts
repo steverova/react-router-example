@@ -1,3 +1,4 @@
+import type { AppDb } from "~/db"
 import {
   getAllProjects,
   getProjectById,
@@ -7,26 +8,26 @@ import {
   deleteProjectInDb,
 } from "./project.repository"
 
-export async function listProjects() {
-  return getAllProjects()
+export async function listProjects(db: AppDb) {
+  return getAllProjects(db)
 }
 
-export async function findProject(id: number) {
-  return getProjectById(id)
+export async function findProject(db: AppDb, id: number) {
+  return getProjectById(db, id)
 }
 
-export async function listProjectsByClient(clientEntityId: number) {
-  return getProjectsByClient(clientEntityId)
+export async function listProjectsByClient(db: AppDb, clientEntityId: number) {
+  return getProjectsByClient(db, clientEntityId)
 }
 
-export async function registerProject(data: {
+export async function registerProject(db: AppDb, data: {
   projectCode: string
   clientEntityId: number
   name: string
   description?: string
   projectManagerId?: number | null
   ownerId?: number | null
-  status?: string
+  status?: "draft" | "active" | "on_hold" | "completed" | "cancelled" | "archived"
   startDate?: string
   targetEndDate?: string
   hoursBudget?: number | null
@@ -34,10 +35,11 @@ export async function registerProject(data: {
   repositoryUrl?: string
   contractReference?: string
 }) {
-  return createProjectInDb(data)
+  return createProjectInDb(db, data)
 }
 
 export async function updateProject(
+  db: AppDb,
   id: number,
   data: {
     clientEntityId?: number
@@ -45,7 +47,7 @@ export async function updateProject(
     description?: string
     projectManagerId?: number | null
     ownerId?: number | null
-    status?: string
+    status?: "draft" | "active" | "on_hold" | "completed" | "cancelled" | "archived"
     startDate?: string
     targetEndDate?: string
     hoursBudget?: number | null
@@ -54,9 +56,9 @@ export async function updateProject(
     contractReference?: string
   }
 ) {
-  return updateProjectInDb(id, data)
+  return updateProjectInDb(db, id, data)
 }
 
-export async function removeProject(id: number) {
-  return deleteProjectInDb(id)
+export async function removeProject(db: AppDb, id: number) {
+  return deleteProjectInDb(db, id)
 }

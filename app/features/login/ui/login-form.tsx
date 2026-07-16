@@ -61,7 +61,7 @@ export function LoginForm({ fetcher }: LoginFormProps) {
   const methods = useForm<LoginInput>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
-      email: "admin@admin.com",
+      email: "admin@example.com",
       password: "password123",
     },
   })

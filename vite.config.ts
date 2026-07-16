@@ -1,13 +1,20 @@
-import { reactRouter } from "@react-router/dev/vite"
-import tailwindcss from "@tailwindcss/vite"
-import path from "node:path"
-import { defineConfig } from "vite"
+import { reactRouter } from "@react-router/dev/vite";
+import { cloudflare } from "@cloudflare/vite-plugin";
+import tailwindcss from "@tailwindcss/vite";
+import path from "node:path";
+import { defineConfig } from "vite";
 
-const srcTauriPath = path.resolve(__dirname, "src-tauri")
+const srcTauriPath = path.resolve(__dirname, "src-tauri");
 
 export default defineConfig({
-  resolve: { tsconfigPaths: true },
-  plugins: [tailwindcss(), reactRouter()],
+  plugins: [
+    cloudflare({ viteEnvironment: { name: "ssr" } }),
+    tailwindcss(),
+    reactRouter(),
+  ],
+  resolve: {
+    tsconfigPaths: true,
+  },
   server: {
     watch: {
       ignored: (filePath: string) => filePath.startsWith(srcTauriPath),

@@ -1,3 +1,7 @@
-import { createDb } from './client';
+import { createDb } from './client'
 
-export const db = await createDb();
+export type AppDb = ReturnType<typeof createDb>
+
+export function getDb(d1: D1Database): AppDb {
+  return createDb(d1)
+}
