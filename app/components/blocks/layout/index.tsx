@@ -13,7 +13,7 @@ import { useAuthStore } from '~/stores/auth-store'
 import WindowControls from '~/components/shared/window-controls'
 import { getDb } from '~/db'
 import { env } from 'cloudflare:workers'
-import BookmarksToolbar from '../bookmarks-toolbar'
+const BookmarksToolbar = React.lazy(() => import('../bookmarks-toolbar'))
 
 export async function loader({ request }: { request: Request }) {
   const db = getDb(env.DB)
@@ -41,7 +41,9 @@ export default function Layout() {
 
   return (
     <div className='flex flex-col h-screen'>
-      <BookmarksToolbar />
+      <React.Suspense fallback={null}>
+        <BookmarksToolbar />
+      </React.Suspense>
       <div className='flex-1 overflow-hidden relative'>
         <SidebarProvider className='h-full'>
           <AppSidebar />
