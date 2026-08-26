@@ -8,6 +8,13 @@
       "when": 1784234849403,
       "tag": "0000_amusing_valeria_richards",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1787700252044,
+      "tag": "0001_majestic_arachne",
+      "breakpoints": true
     }
   ]
 }

@@ -14,6 +14,7 @@ import {
 	User,
   User2,
 } from 'lucide-react'
+import { LinkShortenerNav } from '~/features/link-shortener/nav'
 
 
 export type NavigationItem = {
@@ -25,7 +26,7 @@ export type NavigationItem = {
 	type?: NavigationItemType
 	authorization?: {
 		roles: string[]
-		
+
 	}
 	children?: NavigationItem[]
 }
@@ -76,7 +77,7 @@ const navigation: NavigationItem[] = [
 			roles: ['admin', 'user'],
 		},
   },
-  {
+	{
 		path: '/table-example',
 		label: 'Table Example',
 		type: 'item',
@@ -85,6 +86,7 @@ const navigation: NavigationItem[] = [
 			roles: ['admin', 'user'],
 		},
 	},
+  ...LinkShortenerNav,
 	{
 		path: '/calendar',
 		label: 'Calendar',

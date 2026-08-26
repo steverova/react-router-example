@@ -41,9 +41,9 @@ export default function Layout() {
 
   return (
     <div className='flex flex-col h-screen'>
-      <React.Suspense fallback={null}>
+      {/*<React.Suspense fallback={null}>
         <BookmarksToolbar />
-      </React.Suspense>
+      </React.Suspense>*/}
       <div className='flex-1 overflow-hidden relative'>
         <SidebarProvider className='h-full'>
           <AppSidebar />

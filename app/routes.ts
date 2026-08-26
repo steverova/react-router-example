@@ -1,4 +1,8 @@
 import { type RouteConfig, index, route, layout } from "@react-router/dev/routes"
+import {
+  linkShortenerAuthenticatedRoutes,
+  linkShortenerPublicRoutes,
+} from "./features/link-shortener/routes"
 
 export default [
   // silencia la petición automática de Chrome DevTools
@@ -7,6 +11,7 @@ export default [
   layout("./layouts/public-layout.tsx", [
     route("about", "./pages/about/index.tsx"),
     route("login", "./features/login/ui/login-page.tsx"),
+    ...linkShortenerPublicRoutes,
     route("*", "./components/blocks/not-found.tsx")
   ]),
   route("logout", "./routes/logout.tsx"),
@@ -34,7 +39,7 @@ export default [
   route("activities/actions/edit", "./features/activities/actions/edit-activity.action.ts"),
   route("activities/actions/delete", "./features/activities/actions/delete-activity.action.ts"),
 
-  
+
 
   layout("./components/blocks/layout/index.tsx", [
     index("routes/home.tsx"),
@@ -51,8 +56,9 @@ export default [
     route("activities", "./features/activities/ui/activity-page.tsx"),
     route("activities/new-record", "./features/activities/ui/activity-form.tsx", { id: "activities-new" }),
     route("activities/:id/edit-record", "./features/activities/ui/activity-form.tsx", { id: "activities-edit" }),
+    ...linkShortenerAuthenticatedRoutes,
     route("dashboard", "./features/dashboard/ui/dashboard-page.tsx", {}),
   ]),
 
-  
+
 ] satisfies RouteConfig
